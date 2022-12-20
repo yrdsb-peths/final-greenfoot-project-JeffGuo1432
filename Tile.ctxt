@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.target=Tile
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Wall\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=tileName\ x\ y
+comment1.target=Tile(java.lang.String,\ int,\ int)
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=boolean\ getBool()
+comment4.params=
+comment4.target=java.lang.String\ getTileDirection()
+comment5.params=
+comment5.target=void\ setLayers()
+numComments=6
