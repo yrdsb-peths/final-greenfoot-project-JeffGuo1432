@@ -6,7 +6,7 @@ import java.util.List;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Skeleton extends Entity
+public class Skeleton extends Enemy
 {
     /**
      * Act - do whatever the Skeleton wants to do. This method is called whenever
@@ -43,6 +43,7 @@ public class Skeleton extends Entity
     String previousMoveState="attacking";
     int changeStateMillis;
     SimpleTimer moveStateTimer = new SimpleTimer();
+    SimpleTimer hurtPlayerTimer = new SimpleTimer();
     
     public Skeleton(){
         animate(0);
@@ -226,13 +227,19 @@ public class Skeleton extends Entity
             animationDelay=200;
             //upon death the skeleton spawns a new skeleton, but I may change this later
             if(moveStateTimer.millisElapsed()>animationDelay*4){
+                world.spawnCoin(getX(),getY());
                 world.removeObject(this);
-                world.spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
+                
             }
         }
         animate(animationDelay);
     }
-    
+    public boolean canKill(){
+        if(moveState!="hurt"&moveState!="dead"){
+            return true;
+        }
+        return false;
+    }
     //this resets the offset for even more randomness
     public void changeOffset(){
         xOffset=Greenfoot.getRandomNumber(100)-50;
@@ -266,7 +273,7 @@ public class Skeleton extends Entity
             List<Tile> bs = getIntersectingObjects(c);
             for(Tile b: bs)
             {
-                if(b.getX() > this.getX()&b.getTileDirection().indexOf("R")!=-1)
+                if(b.getX() > this.getX()&b.getTileDirection().indexOf("L")!=-1)
                     if(b.getX()<=this.getX()+33){
                         return false;
                     }

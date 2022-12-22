@@ -6,7 +6,7 @@
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Axe extends Actor
+public class Axe extends Entity
 {
     /**
      * Act - do whatever the Axe wants to do. This method is called whenever
@@ -55,6 +55,10 @@ public class Axe extends Actor
         else{
                     setImage(imageLeft);
         }
+        MyWorld world = (MyWorld) getWorld();
+        int x = getX(), y = getY();
+            world.removeObject(this);
+            world.addObject(this, x, y); 
         /**
         count++;
         attackCooldown-=1;

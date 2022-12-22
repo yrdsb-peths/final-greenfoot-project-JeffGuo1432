@@ -19,6 +19,7 @@ public class AxeHitbox extends Hero
     GreenfootImage attackImageLeft = new GreenfootImage("images/swingingAxe_.png");
     GreenfootSound axeStuck = new GreenfootSound("sounds/AxeStuck.mp3");
     GreenfootImage hitbox = new GreenfootImage("images/axeHitbox_.png");
+    GreenfootImage swingHitbox = new GreenfootImage("images/axeSwingingHitbox_.png");
     int count;
     int weaponDirection=1;
     int weaponDirectionY=1;
@@ -69,24 +70,25 @@ public class AxeHitbox extends Hero
                 attack=true;
             }
             if(attackTimer.millisElapsed() < 100){
+                
+                world.addObject(new AxeSwingingHitbox(),super.getXPos()+weaponDirection*35,super.getYPos()+10);
+                
                 if(super.getXDirectionChar()=='r'){
                     weaponDirection=1;
                 }
                 else{
                     weaponDirection=-1;
                 }
-                System.out.println("1");
                 setLocation(super.getXPos()+weaponDirection*40,super.getYPos()+22);
                 setRotation(getRotation()+15*weaponDirection); 
+                
             }
             if(attackTimer.millisElapsed() > 200){
-                
                 attack=false;
                 setRotation(0);
             }
             
             if(attack==false){
-                System.out.println("2");
                 setLocation(super.getXPos()+weaponDirection*40,super.getYPos());
                 x=getX();
                 y=getY();
@@ -104,7 +106,6 @@ public class AxeHitbox extends Hero
                     stuck=false;
                     
                     thrown=false;
-                    System.out.println("3");
                     setLocation(super.getXPos()+weaponDirection*40,super.getYPos());
                     setRotation(0);
                     }
@@ -128,7 +129,6 @@ public class AxeHitbox extends Hero
                     stuck=false;
                     thrown=false;
                     catchable=false;
-                    System.out.println("4");
                     setLocation(super.getXPos()+weaponDirection*40,super.getYPos());
                     setRotation(0);
                 }
@@ -172,6 +172,7 @@ public class AxeHitbox extends Hero
         **/
     }
     //these functions are useful to tell enemies that the axe is in a position to harm them
+    
     public static int getXPosition(){
         return x;
     }

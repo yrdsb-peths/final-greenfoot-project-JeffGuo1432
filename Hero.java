@@ -22,20 +22,19 @@ public class Hero extends Entity
     
     //variables used in movement along the x axis
     int xVelocity=0;
-    int xSpeed = 4;
+    int xSpeed = 3;
     static int xDirection=0;
     static char xDirectionChar = 'r';
     static int x;
     //variables used in movement along the y axis
     int yVelocity=0;
-    int ySpeed = 1;
+    int ySpeed = 3;
     static int yDirection=0;
     static int y;
     
     public Hero()
     {
-        xDirection=0;
-        xDirectionChar = 'r';
+        
     }
     public void animate(int animationDelay)
     {
@@ -55,6 +54,7 @@ public class Hero extends Entity
         MyWorld world = (MyWorld) getWorld();
         x=getX();
         y=getY();
+        
         if(xDirection<0&canMoveLeft()==false){
             xDirection=0;
         }
@@ -67,8 +67,8 @@ public class Hero extends Entity
         if(yDirection>0&canMoveDown()==false){
             yDirection=0;
         }
-        setLocation(getX()+xVelocity,getY()+yVelocity);
         
+        setLocation(getX()+xVelocity,getY()+yVelocity);
         xVelocity=xDirection*xSpeed;
         if((xVelocity==0)&(yVelocity==0)){
             action="Idle_";
@@ -79,18 +79,7 @@ public class Hero extends Entity
             animationDelay=100;
         }
         //this slows the player down when they are carrying an axe, because it is heavy
-        if(AxeHitbox.isThrown()){
-            xSpeed=3;
-            ySpeed=3;
-        }
-        else if(AxeHitbox.isAttacking()){
-            xSpeed=2;
-            ySpeed=2;
-        }
-        else{
-            xSpeed=3;
-            ySpeed=3;
-        }
+        
         
         if(Greenfoot.isKeyDown("right")){
             xDirection=1;
@@ -100,9 +89,11 @@ public class Hero extends Entity
             xDirection=-1;
             xDirectionChar='l';
         }
+        
         if(Greenfoot.isKeyDown("right")==false&(Greenfoot.isKeyDown("left")==false)){
             xDirection=0;
         }
+    
         yVelocity=yDirection*ySpeed;
         
         if(Greenfoot.isKeyDown("down")){
@@ -117,6 +108,9 @@ public class Hero extends Entity
         if(Greenfoot.isKeyDown("p")){
             System.out.println(getY());
         }
+        if(isTouchingSkeleton()){
+            action="Hurt_";
+        }
         /**
          * //the code below was meant to slow down the player when they were moving diagonally, using pythagorean theorem
         if((xVelocity!=0)&(yVelocity!=0)){
@@ -128,6 +122,24 @@ public class Hero extends Entity
         **/
         animate(animationDelay);
         setLayers();
+    }
+    public boolean isTouchingSkeleton()
+    {
+        for(Class c: new Class[]{Skeleton.class})
+        {
+            
+            List<Skeleton> bs = getIntersectingObjects(c);
+            
+            for(Skeleton b: bs)
+            {
+                if(b.canKill()){
+                if(b.getX()+30>=this.getX()&b.getX()-30<=this.getX()&b.getY()+60>=this.getY()&b.getY()-60<=this.getY()){
+                    return true;
+                }
+                }
+            }
+        }
+        return false;
     }
     public void setLayers(){
         MyWorld world = (MyWorld) getWorld();
@@ -240,7 +252,7 @@ public class Hero extends Entity
                 }
                 if(b.getY() > this.getY()&b.getTileDirection().indexOf("D")!=-1){
                     if(b.getX()<=this.getX()+30&b.getX()>=this.getX()-30){
-                        if(b.getY()<=this.getY()+35){
+                        if(b.getY()<=this.getY()+40){
                             return false;
                         }
                     }

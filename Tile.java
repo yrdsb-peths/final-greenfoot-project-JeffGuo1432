@@ -30,8 +30,14 @@ public class Tile extends Obstacle
     public void act()
     {
         //This code is what snaps the walls to the grid, it will also allow me to easily design levels
-                                                                                                                                                                                                                                                                                                                                setLocation(x+tileSize/2-(x%tileSize),y+tileSize/2-(y%tileSize));
-        setLayers();
+        MyWorld world = (MyWorld) getWorld();
+        setLocation(x+tileSize/2-(x%tileSize),y+tileSize/2-(y%tileSize));
+        setLayers();  
+        if(getTileDirection().equals("U")){
+            int x = getX(), y = getY();
+            world.removeObject(this);
+            world.addObject(this, x, y);    
+        }
     }
     public boolean getBool(){
         return true;
