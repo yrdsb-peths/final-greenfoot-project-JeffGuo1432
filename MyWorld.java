@@ -96,18 +96,7 @@ new Tile("wallD",131,298),
         //this spawns the beginning wave of skeleton. I was too lazy to make a for loop
         
         
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
+        
         spawnGoblin(500,Greenfoot.getRandomNumber(300+50));
         
         

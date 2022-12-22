@@ -69,7 +69,6 @@ public class HeroHitbox extends Hero
         }
         
         setLocation(getX()+xVelocity,getY()+yVelocity);
-        System.out.println(xVelocity+"   "+xSpeed+"    "+xDirection);
         xVelocity=xDirection*xSpeed;
         if((xVelocity==0)&(yVelocity==0)){
             action="Idle_";
