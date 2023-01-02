@@ -3,7 +3,6 @@ comment0.target=Axe
 comment0.text=\r\n\ Write\ a\ description\ of\ class\ Axe\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
 comment1.params=
 comment1.target=Axe()
-comment1.text=\r\n\ \ \ \ GreenfootSound\ axeStuck\ \=\ new\ GreenfootSound("sounds/AxeStuck.mp3");\r\n\ \ \ \ int\ count;\r\n\ \ \ \ int\ weaponDirection\=1;\r\n\ \ \ \ int\ weaponDirectionY\=1;\r\n\ \ \ \ public\ static\ boolean\ thrown\=false;\r\n\ \ \ \ public\ static\ boolean\ attack\=false;\r\n\ \ \ \ public\ static\ boolean\ stuck\=false;\r\n\ \ \ \ boolean\ catchable\=false;\r\n\ \ \ \ SimpleTimer\ attackTimer\ \=\ new\ SimpleTimer();\r\n\ \ \ \ int\ thrownDirection;\r\n\ \ \ \ int\ speed\ \=\ 5;\r\n\ \ \ \ int\ attackCooldown\=0;\r\n\ \ \ \ \r\n\ \ \ \ SimpleTimer\ thrownTimer\ \=\ new\ SimpleTimer();\r\n
 comment2.params=
 comment2.target=void\ act()
 numComments=3

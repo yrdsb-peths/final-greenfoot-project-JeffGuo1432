@@ -33,15 +33,16 @@ public class Tile extends Obstacle
         MyWorld world = (MyWorld) getWorld();
         setLocation(x+tileSize/2-(x%tileSize),y+tileSize/2-(y%tileSize));
         setLayers();  
+        
         if(getTileDirection().equals("U")){
+            
+            //This code puts the tile in the top layer, since I always want tiles facing up to be in the foreground
             int x = getX(), y = getY();
             world.removeObject(this);
             world.addObject(this, x, y);    
         }
     }
-    public boolean getBool(){
-        return true;
-    }
+    //returns the tiles direction as a string
     public String getTileDirection()
     {
         String ans="";
@@ -54,6 +55,7 @@ public class Tile extends Obstacle
             }
         }
     }
+    //If the Hero is lower down that the tile, the Hero will appear ontop and vice versa
     public void setLayers(){
         MyWorld world = (MyWorld) getWorld();
         for(Class c: new Class[]{Hero.class})

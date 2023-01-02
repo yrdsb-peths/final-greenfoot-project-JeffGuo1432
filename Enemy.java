@@ -16,4 +16,5 @@ public class Enemy extends Entity
     {
         // Add your action code here.
     }
+   
 }

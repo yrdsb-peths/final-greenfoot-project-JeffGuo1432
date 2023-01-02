@@ -45,24 +45,12 @@ public class Goblin extends Enemy
     SimpleTimer moveStateTimer = new SimpleTimer();
     SimpleTimer hurtPlayerTimer = new SimpleTimer();
     int angle;
+    boolean spearCreated;
     public Goblin(){
-        animate(0);
-        //offset to make sure the skeletons don't clump up onto one pixel
-        xOffset=Greenfoot.getRandomNumber(100)-50;
-        yOffset=Greenfoot.getRandomNumber(100)-50;
         
-        //i gave each skeleton a "personality" to add some variation in their movements
-        if(Greenfoot.getRandomNumber(2)==0){
-            moveState="attacking";
-        }
-        if(Greenfoot.getRandomNumber(2)==0){
-            personality="erratic";
-        }
-        if(Greenfoot.getRandomNumber(8)==0){
-            personality="smart";
-        }
-        personality="smart";
-        moveState="walking";
+         
+    
+        
     }
     public void animate(int animationDelay)
     {
@@ -81,7 +69,9 @@ public class Goblin extends Enemy
     public void act()
     {
         // Add your action code here.
-        System.out.println(moveState);
+        MyWorld world = (MyWorld) getWorld();
+        x=getX();
+        y=getY();
         if(moveState=="walking"){
             if(Hero.getXPos()>this.getX()){
                 setLocation(getX()+xSpeed,getY());
@@ -95,10 +85,9 @@ public class Goblin extends Enemy
             if(Hero.getYPos()<this.getY()){
                 setLocation(getX(),getY()-ySpeed);
             }
+            
         }
-        System.out.println(getObjectsInRange(200,Hero.class).toString());
         if(getObjectsInRange(200,Hero.class).toString().equals("[]")==false){
-            System.out.print("yes");
             moveState="aiming";
         }
         else{
@@ -106,8 +95,15 @@ public class Goblin extends Enemy
         }
         if(moveState=="aiming"){
             animationDelay=160;
+            
         }
         animate(animationDelay);
+    }
+    public static int getXPos(){
+        return x;
+    }
+    public static int getYPos(){
+        return y;
     }
     public boolean canKill(){
         if(moveState!="hurt"&moveState!="dead"){

@@ -22,13 +22,13 @@ public class Hero extends Entity
     
     //variables used in movement along the x axis
     int xVelocity=0;
-    int xSpeed = 3;
+    int xSpeed = 1;
     static int xDirection=0;
     static char xDirectionChar = 'r';
     static int x;
     //variables used in movement along the y axis
     int yVelocity=0;
-    int ySpeed = 3;
+    int ySpeed = 1;
     static int yDirection=0;
     static int y;
     
@@ -245,7 +245,7 @@ public class Hero extends Entity
                 
                 if(b.getY() > this.getY()&b.getTileDirection().indexOf("U")!=-1){
                     if(b.getX()<=this.getX()+30&b.getX()>=this.getX()-30){
-                        if(b.getY()<=this.getY()+35){
+                        if(b.getY()<=this.getY()+40){
                             return false;
                         }
                     }

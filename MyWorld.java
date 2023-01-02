@@ -15,8 +15,15 @@ public class MyWorld extends World
      */
     static int worldHeight=600;   
     static int worldWidth=400;;
-    //here is the array of all the tiles, it has the name of the tile, and the location
+    //here is the array of all the tiles, I have different arrays that I will use throughout the game
+    //each tile has a name, and x, y coordinates
+    //the name of the tile dictates the tile's image as well as hitbox
+    //the location is not a precise location, since the tiles are placed by hand
+    //the tile object has code that will place the tile in the correct location later
+       
+    //the array "borderMap" holds the tiles that make up the outer edge of the screen
     Tile[] borderMap = {new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",18,182),new Tile("wallR",21,225),new Tile("wallR",26,253),new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),new Tile("wallD",145,20),new Tile("wallD",194,23),new Tile("wallR",18,105),new Tile("wallD",224,23),new Tile("wallD",267,22),new Tile("wallD",309,22),new Tile("wallD",346,23),new Tile("wallD",392,24),new Tile("wallD",421,22),new Tile("wallD",460,22),new Tile("wallD",504,22),new Tile("wallD",534,22),new Tile("wallL",580,62),new Tile("wallL",588,103),new Tile("wallL",581,142),new Tile("wallL",582,191),new Tile("wallL",590,224),new Tile("wallL",577,259),new Tile("wallL",583,296),new Tile("wallL",593,332),new Tile("wallL",592,19),new Tile("wallCornerUR",33,378),new Tile("wallU",72,378),new Tile("wallU",98,378),new Tile("wallU",133,382),new Tile("wallU",174,383),new Tile("wallU",218,384),new Tile("wallU",251,385),new Tile("wallU",299,381),new Tile("wallU",342,383),new Tile("wallU",384,383),new Tile("wallU",421,386),new Tile("wallU",461,388),new Tile("wallU",500,387),new Tile("wallU",536,386),new Tile("wallCornerUL",572,385)};
+    //the array "level1Map" holds the tiles in the first level, which is spawns in three thick walls.
     Tile[] level1Map = {
 
 new Tile("wallR",182,344),
@@ -57,6 +64,7 @@ new Tile("wallUL",136,136),
 new Tile("wallUL",463,146),
 new Tile("wallL",302,24),
 new Tile("wallR",342,26),};
+    //this is a map that my friend gabriel made, it is a little broken
 Tile[] gabrielsMap={
     new Tile("wallD",44,135),
 new Tile("wallD",93,138),
@@ -93,57 +101,65 @@ new Tile("wallD",131,298),
         addObject(hero,100,200);
         addObject(new Axe(),100,200);
         addObject(new AxeHitbox(),100,200);
-        //this spawns the beginning wave of skeleton. I was too lazy to make a for loop
         
         
+        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
         
-        spawnGoblin(500,Greenfoot.getRandomNumber(300+50));
-        
+        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
+        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
+        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
+        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
+        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
+        //addObject(new Spear(),100,200);
         
         
 
         
         
         
-        
-    
-        
+
         spawnMap(borderMap);
         addObject(new CoinUI(),20,30);
         //spawnMap(level1Map);
     }
     
     public void act(){
+        
+        //Whenever the mouse button is clicked, a tile with the name of tileName is spawned on the location of the mouse
         String tileName="wallR";
-        
-        if(Greenfoot.mouseClicked(null))
-        {
+        if(Greenfoot.mouseClicked(null)){
             MouseInfo mouse = Greenfoot.getMouseInfo();
-            
-            System.out.println("new Tile(\""+tileName+"\","+mouse.getX()+","+mouse.getY()+"),");
             addObject(new Tile(tileName,mouse.getX(),mouse.getY()),mouse.getX(),mouse.getY());
+            //When a tile is created, the code prints out "newTile(tileName,x,y)" which I can then easily 
+            //copy and paste into the arrays above
+            System.out.println("new Tile(\""+tileName+"\","+mouse.getX()+","+mouse.getY()+"),");
         }
-        
     }
     public void spawnMap(Tile[] map){
+        //Loops through the entire map array, adding every tileObject[i]
         for(int i = 0 ; i < map.length ; i++){
             addObject(map[i],0,0);
         }
     }
     public void spawnSkeleton(int x, int y)
     {
+        //Spawns a skeleton at x y
         addObject(new Skeleton(),x,y);
     }
     public void spawnGoblin(int x, int y)
     {
+        //Spawns a goblin at x y
         addObject(new Goblin(),x,y);
     }
     public void spawnCoin(int x, int y)
     {
+        //Spawns a coin at x y
         addObject(new Coin(), x, y);
     }
     public static String getTileDirection(Tile t)
     {
+        //This returns the tileDirection, I will use this in the code for the hitboxes, since each tiles hitbox 
+        //varies based on its direction
         return t.tileName.substring(t.tileName.length()-1);
     }
 }

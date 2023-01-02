@@ -9,8 +9,7 @@
 public class AxeHitbox extends Hero
 {
     /**
-     * Act - do whatever the CopyOfAxe wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * The AxeHitbox is a weapon
      */
     //variables used in animation
     GreenfootImage imageRight = new GreenfootImage("images/axe_.png");
@@ -37,8 +36,7 @@ public class AxeHitbox extends Hero
     SimpleTimer thrownTimer = new SimpleTimer();
     public AxeHitbox()
     {
-        setImage(hitbox);
-                    
+        setImage(hitbox);      
     }
     public void act()
     {
@@ -48,20 +46,19 @@ public class AxeHitbox extends Hero
         count++;
         attackCooldown-=1;
         MyWorld world = (MyWorld) getWorld();
+        //When a player presses "Q" the thrown variable is set to true so the Axe gets thrown
         if(Greenfoot.isKeyDown("q")){
             thrown=true;
             thrownTimer.mark();
             thrownDirection=weaponDirection;
         }
+        //If (the Axe is in the players hands){
         if(stuck==false&thrown==false){
-            if(super.getXDirectionChar()=='r'){
-                weaponDirection=1;
-            }
-            else if(super.getXDirectionChar()=='l'){
-                weaponDirection=-1;
-            }
+            //The weapon's direction corresponds with the player's
+            allignDirectionWithHero();
         }   
-        //this code executes when the axe is not on the player, or an obstacle
+        
+        
         if(thrown==false){
             thrownTimer.mark();
             if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
@@ -73,12 +70,7 @@ public class AxeHitbox extends Hero
                 
                 world.addObject(new AxeSwingingHitbox(),super.getXPos()+weaponDirection*35,super.getYPos()+10);
                 
-                if(super.getXDirectionChar()=='r'){
-                    weaponDirection=1;
-                }
-                else{
-                    weaponDirection=-1;
-                }
+                allignDirectionWithHero();
                 setLocation(super.getXPos()+weaponDirection*40,super.getYPos()+22);
                 setRotation(getRotation()+15*weaponDirection); 
                 
@@ -172,7 +164,14 @@ public class AxeHitbox extends Hero
         **/
     }
     //these functions are useful to tell enemies that the axe is in a position to harm them
-    
+    public void allignDirectionWithHero(){
+        if(super.getXDirectionChar()=='r'){
+                weaponDirection=1;
+            }
+            else if(super.getXDirectionChar()=='l'){
+                weaponDirection=-1;
+            }
+    }
     public static int getXPosition(){
         return x;
     }

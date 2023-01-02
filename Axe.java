@@ -9,34 +9,33 @@
 public class Axe extends Entity
 {
     /**
-     * Act - do whatever the Axe wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * The Axe is the first weapon that I've added to the game.
+     * Originally, I intended it to have a primary fire and a secondary fire.
+     * The primary fire would swing the axe damaging enemies near the player, 
+     * and the secondary fire would throw the axe hitting enemies along the 
+     * way until the axe gets stuck in a wall. Kind of like the real sport, axe throwing.
+     * The player would then have up to the axe that is stuck in the wall to pick it back up.
+     * During implementation, I noticed that if the player walks backwards after the axe was thrown, 
+     * the axe would return to the player. Instead of fixing this bug, I thought to myself making the Axe a controllable
+     * boomerang type weapon would be much more interesting and could open the door to new gameplay.
+     * Now, after the axe is thrown you can control its direction using the player movement keys, allowing you to weave the 
+     * Axe past obstacles and through enemies.
+     * 
+     * 
+     * The Axe Object is simply an image placed ontop of the AxeHitbox.
+     * This is because the Axe itself is a long and rectangular that 
+     * I found was often times too frustrating to control.
      */
-    //variables used in animation
     
     GreenfootImage imageRight = new GreenfootImage("images/axe_.png");
     GreenfootImage imageLeft = new GreenfootImage("images/axe_.png");
     
     GreenfootImage attackImageRight = new GreenfootImage("images/swingingAxe_.png");
     GreenfootImage attackImageLeft = new GreenfootImage("images/swingingAxe_.png");
-    /**
-    GreenfootSound axeStuck = new GreenfootSound("sounds/AxeStuck.mp3");
-    int count;
-    int weaponDirection=1;
-    int weaponDirectionY=1;
-    public static boolean thrown=false;
-    public static boolean attack=false;
-    public static boolean stuck=false;
-    boolean catchable=false;
-    SimpleTimer attackTimer = new SimpleTimer();
-    int thrownDirection;
-    int speed = 5;
-    int attackCooldown=0;
     
-    SimpleTimer thrownTimer = new SimpleTimer();
-    **/
     public Axe()
     {
+        //Initalizes the images
         setImage(imageLeft);
         imageRight.scale(36,72);
         imageLeft.mirrorHorizontally();
@@ -47,6 +46,7 @@ public class Axe extends Entity
     }
     public void act()
     {
+        //Copies the axeHitboxes rotation, position, and direction
         setLocation(AxeHitbox.getXPosition(),AxeHitbox.getYPosition());
         setRotation(AxeHitbox.getAxeRotation());
         if(Hero.getXDirectionChar()=='r'){
@@ -57,148 +57,8 @@ public class Axe extends Entity
         }
         MyWorld world = (MyWorld) getWorld();
         int x = getX(), y = getY();
-            world.removeObject(this);
-            world.addObject(this, x, y); 
-        /**
-        count++;
-        attackCooldown-=1;
-        MyWorld world = (MyWorld) getWorld();
-        if(Greenfoot.isKeyDown("q")){
-            thrown=true;
-            thrownTimer.mark();
-            thrownDirection=weaponDirection;
-        }
-        if(stuck==false&thrown==false){
-            if(super.getXDirectionChar()=='r'){
-                weaponDirection=1;
-                setImage(imageRight);
-            }
-            else if(super.getXDirectionChar()=='l'){
-                weaponDirection=-1;
-                setImage(imageLeft);
-            }
-        }   
-        //this code executes when the axe is not on the player, or an obstacle
-        if(thrown==false){
-            thrownTimer.mark();
-            if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
-                attackTimer.mark();
-                attackCooldown=30;
-                attack=true;
-            }
-            if(attackTimer.millisElapsed() < 100){
-                if(super.getXDirection()=='r'){
-                    weaponDirection=1;
-                    setImage(attackImageRight);
-                }
-                else{
-                    weaponDirection=-1;
-                    setImage(attackImageLeft);
-                }
-                
-                setLocation(super.getXPos()+weaponDirection*28,super.getYPos()+22);
-                setRotation(getRotation()+15*weaponDirection); 
-            }
-            if(attackTimer.millisElapsed() > 200){
-                
-                attack=false;
-                setRotation(0);
-            }
-            
-            if(attack==false){
-                this.setLocation(super.getXPos()+weaponDirection*28,super.getYPos());
-                x=getX();
-                y=getY();
-                world.removeObject(this);
-                world.addObject(this, x, y);
-            }
-        }
-        else{
-            attack=false;
-            if(Math.abs(this.getX()-Hero.getXPos())>50){
-                catchable=true;
-            }
-            if(catchable){
-                if(isTouching(Hero.class)&weaponDirection!=thrownDirection){
-                    stuck=false;
-                    thrown=false;
-                    setLocation(super.getXPos()+weaponDirection*28,super.getYPos());
-                    setRotation(0);
-                    }
-            }
-            
-            if((isAtEdge()||isTouching(Obstacle.class))){
-                if(stuck==false){
-                }
-                stuck=true;
-                
-                
-                if(getX()>Hero.getXPos()){
-                    setRotation(20);
-                }
-                else{
-                    setRotation(-20);
-                }
-                
-                if(isTouching(Hero.class)&thrownTimer.millisElapsed()>100){
-                    stuck=false;
-                    thrown=false;
-                    catchable=false;
-                    setLocation(super.getXPos()+weaponDirection*28,super.getYPos());
-                    setRotation(0);
-                }
-                
-            }
-            else{
-                if(isAtEdge()==false&isTouching(Obstacle.class)==false){
-                   if(Greenfoot.isKeyDown("right")||weaponDirection==1){
-                        weaponDirection=1;
-                        weaponDirectionY=0;
-                    }
-                   if(Greenfoot.isKeyDown("left")||weaponDirection==-1){
-                        weaponDirection=-1;
-                        weaponDirectionY=0;
-                    } 
-                   if(Greenfoot.isKeyDown("up")){
-                        weaponDirectionY=-1;
-                        weaponDirection=0;
-                    }
-                   if(Greenfoot.isKeyDown("down")){
-                        weaponDirectionY=1;
-                        weaponDirection=0;
-                    }
-                   if(weaponDirection!=0){
-                       setRotation(getRotation()+20*(weaponDirection)); 
-                   }
-                   else{
-                       setRotation(getRotation()-20*(weaponDirectionY)); 
-                   }
-                   
-                   
-                   setLocation(getX()+speed*weaponDirection,getY()+speed*weaponDirectionY);
-                   
-                }
+        world.removeObject(this);
+        world.addObject(this, x, y); 
+    }
     
-            }
-        }
-        /**if(count%50==0){
-            System.out.println(super.getXPos());
-        }
-        **/
-    }
-    //these functions are useful to tell enemies that the axe is in a position to harm them
-    /**
-    static boolean isThrown()
-    {
-        return thrown;
-    }
-    static boolean isAttacking()
-    {
-        return attack;
-    }
-    static boolean isStuck()
-    {
-        return stuck;
-    }
-    **/
 }

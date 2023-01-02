@@ -55,62 +55,7 @@ public class HeroHitbox extends Hero
         x=getX();
         y=getY();
         
-        if(xDirection<0&canMoveLeft()==false){
-            xDirection=0;
-        }
-        if(xDirection>0&canMoveRight()==false){
-            xDirection=0;
-        }
-        if(yDirection<0&canMoveUp()==false){
-            yDirection=0;
-        }
-        if(yDirection>0&canMoveDown()==false){
-            yDirection=0;
-        }
-        
-        setLocation(getX()+xVelocity,getY()+yVelocity);
-        xVelocity=xDirection*xSpeed;
-        if((xVelocity==0)&(yVelocity==0)){
-            action="Idle_";
-            animationDelay=160;
-        }
-        else{
-            action="WalkRun_";
-            animationDelay=100;
-        }
-        //this slows the player down when they are carrying an axe, because it is heavy
-        
-        
-        if(Greenfoot.isKeyDown("right")){
-            xDirection=1;
-            xDirectionChar='r';
-        }
-        if(Greenfoot.isKeyDown("left")){
-            xDirection=-1;
-            xDirectionChar='l';
-        }
-        
-        if(Greenfoot.isKeyDown("right")==false&(Greenfoot.isKeyDown("left")==false)){
-            xDirection=0;
-        }
-    
-        yVelocity=yDirection*ySpeed;
-        
-        if(Greenfoot.isKeyDown("down")){
-            yDirection=1;
-        }
-        if(Greenfoot.isKeyDown("up")){
-            yDirection=-1;
-        }
-        if(Greenfoot.isKeyDown("down")==false&(Greenfoot.isKeyDown("up")==false)){
-            yDirection=0;
-        }
-        if(Greenfoot.isKeyDown("p")){
-            System.out.println(getY());
-        }
-        if(isTouchingSkeleton()){
-            action="Hurt_";
-        }
+        setLocation(super.getXPos(),super.getYPos());
         /**
          * //the code below was meant to slow down the player when they were moving diagonally, using pythagorean theorem
         if((xVelocity!=0)&(yVelocity!=0)){

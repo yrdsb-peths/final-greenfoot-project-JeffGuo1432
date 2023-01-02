@@ -61,7 +61,7 @@ public class Skeleton extends Enemy
         if(Greenfoot.getRandomNumber(8)==0){
             personality="smart";
         }
-        personality="robotic";
+        personality="smart";
     }
     public void animate(int animationDelay)
     {
@@ -225,7 +225,6 @@ public class Skeleton extends Enemy
             yVelocity=0;
             action="Death_";
             animationDelay=200;
-            //upon death the skeleton spawns a new skeleton, but I may change this later
             if(moveStateTimer.millisElapsed()>animationDelay*4){
                 world.spawnCoin(getX(),getY());
                 world.removeObject(this);
@@ -233,6 +232,7 @@ public class Skeleton extends Enemy
             }
         }
         animate(animationDelay);
+        //setLayers();
     }
     public boolean canKill(){
         if(moveState!="hurt"&moveState!="dead"){
@@ -247,6 +247,7 @@ public class Skeleton extends Enemy
         xOffset=0;
         yOffset=0;
     }
+    /**
    public boolean canMoveLeft()
     {
         for(Class c: new Class[]{Tile.class})
@@ -316,4 +317,5 @@ public class Skeleton extends Enemy
         }
         return true;
     }
+    **/
 }
