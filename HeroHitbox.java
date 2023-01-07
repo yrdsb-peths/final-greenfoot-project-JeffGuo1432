@@ -55,7 +55,8 @@ public class HeroHitbox extends Hero
         x=getX();
         y=getY();
         
-        setLocation(super.getXPos(),super.getYPos());
+        setLocation(Hero.getXPos(),Hero.getYPos());
+        setRotation(Hero.getXDirection());
         /**
          * //the code below was meant to slow down the player when they were moving diagonally, using pythagorean theorem
         if((xVelocity!=0)&(yVelocity!=0)){

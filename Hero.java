@@ -51,6 +51,7 @@ public class Hero extends Entity
     public void act()
     {
         // basic movement
+        
         MyWorld world = (MyWorld) getWorld();
         x=getX();
         y=getY();

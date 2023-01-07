@@ -99,6 +99,7 @@ new Tile("wallD",131,298),
         super(worldHeight, worldWidth, 1); 
         Hero hero = new Hero();
         addObject(hero,100,200);
+        addObject(new HeroHitbox(),100,200);
         addObject(new Axe(),100,200);
         addObject(new AxeHitbox(),100,200);
         
