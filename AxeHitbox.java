@@ -21,12 +21,9 @@ public class AxeHitbox extends Entity
     GreenfootImage swingHitbox = new GreenfootImage("images/axeSwingingHitbox_test1.png");
     GreenfootImage swingingImageRight = new GreenfootImage("images/swingAxe_.png");
     GreenfootImage swingingImageLeft = new GreenfootImage("images/swingAxe_.png");
-    GreenfootImage swingImage0=new GreenfootImage("images/axeSwing_/swing_0.png");
-    GreenfootImage swingImage1=new GreenfootImage("images/axeSwing_/swing_1.png");
-    GreenfootImage swingImage2=new GreenfootImage("images/axeSwing_/swing_2.png");
-    GreenfootImage swingImage3=new GreenfootImage("images/axeSwing_/swing_3.png");
+    
     int count;
-    int weaponDirection=1;
+    public static int weaponDirection=1;
     int weaponDirectionY=1;
     public static boolean thrown=false;
     public static boolean attack=false;
@@ -37,22 +34,26 @@ public class AxeHitbox extends Entity
     int speed = 5;
     int attackCooldown=0;
     int attackTicks = 0;
-    int attackingWeaponDirection=0;
+    public static int attackingWeaponDirection=0;
     public static int x;
     public static int y;
     public static int rotation;
     SimpleTimer thrownTimer = new SimpleTimer();
     public AxeHitbox()
     {
-                            System.out.println("--------------------");
-
+        thrown=false;           
+        stuck=false;
         setImage(hitbox);   
         swingingImageRight.scale(72,72);
-        swingImage0.scale(144,72);
-        swingImage1.scale(144,72);
-        swingImage2.scale(144,72);
-        swingImage3.scale(144,72);
-        swingHitbox.scale(36,72);
+        
+        
+        
+        swingHitbox.scale(24,48);
+        System.out.println("- S T A R T -");
+        System.out.println("thrown:"+thrown);
+        System.out.println("attack:"+attack);
+        System.out.println("stuck:"+stuck);
+        
     }
     public void act()
     {
@@ -62,6 +63,14 @@ public class AxeHitbox extends Entity
         count++;
         attackCooldown-=1;
         MyWorld world = (MyWorld) getWorld();
+        if(count%50==0){
+            System.out.println("--------------------------"+count/50);
+            System.out.println("thrown:"+thrown);
+            System.out.println("attack:"+attack);
+            System.out.println("stuck:"+stuck);
+            System.out.println("catchable:"+catchable);
+            //System.out.println("attackTimer:"+attackTimer.millisElapsed());
+        }
         //When a player presses "Q" the thrown variable is set to true so the Axe gets thrown
         if(Greenfoot.isKeyDown("q")){
             thrown=true;
@@ -70,18 +79,19 @@ public class AxeHitbox extends Entity
         }
         if(thrown==true){
             attack=false;
-            if(Math.abs(this.getX()-Hero.getXPos())>50){
+            setImage(hitbox);
+
+            if(Math.abs(this.getX()-Hero.getXPos())>60){
                 catchable=true;
             }
+            //catching code
             if(catchable){
                 if(isTouching(Hero.class)){
-                    System.out.println("b");
-                }
-                if(isTouching(Hero.class)&weaponDirection!=thrownDirection){
                     stuck=false;
                     thrown=false;
+                    catchable=false;
                     setLocation(Hero.getXPos()+weaponDirection*40,Hero.getYPos());
-                    System.out.println("a");
+                    
                     setRotation(0);
                 }
             }
@@ -91,7 +101,6 @@ public class AxeHitbox extends Entity
                     axeStuck.play();
                 }
                 stuck=true;
-                
                 
                 if(getX()>Hero.getXPos()){
                     setRotation(20);
@@ -144,6 +153,7 @@ public class AxeHitbox extends Entity
         //If (the Axe is in the players hands){
         if(stuck==false&thrown==false){
             //The weapon's direction corresponds with the player's
+            
             allignDirectionWithHero();
         }   
         
@@ -151,34 +161,19 @@ public class AxeHitbox extends Entity
         if(thrown==false){
             thrownTimer.mark();
             //Melee attack
+            if(attackCooldown>0){
+                setImage(hitbox);
+            }
             if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
                 attackTimer.mark();
                 attackCooldown=30;
                 attack=true;
                 attackingWeaponDirection=weaponDirection;
+
                 //System.out.println("        pqwieufgpupiqwucbpiuqwbec              ");
             }
-            /**
-            if(attackTimer.millisElapsed()<40){
-                setLocation(Hero.getXPos(),Hero.getYPos());
-                
-                setRotation(-20*attackingWeaponDirection);
-                move(80*attackingWeaponDirection);
-            }
-            **/
             if(attack==true){
-                if(attackTimer.millisElapsed()<40){
-                    setImage(swingHitbox);
-                }
-                else if(attackTimer.millisElapsed()<80){
-                    //setImage(swingImage1);
-                }
-                else if(attackTimer.millisElapsed()<120){
-                    //setImage(swingImage2);
-                }
-                else if(attackTimer.millisElapsed()<160){
-                    //setImage(swingImage3);
-                }
+                setImage(swingHitbox);
                 /**
                 if(attackTimer.millisElapsed()==80){
                     setImage(new GreenfootImage("images/axeSwing_/swing_1.png"));
@@ -193,27 +188,20 @@ public class AxeHitbox extends Entity
                     getImage().scale(144,72);
                 }
                 **/
-                if(attackTimer.millisElapsed()<160){
-                    
-                    setLocation(Hero.getXPos(),Hero.getYPos());
-                    
-                    setRotation(((attackTimer.millisElapsed()/2)-80)*attackingWeaponDirection);
-                    move(80*attackingWeaponDirection);
-                    setRotation(getRotation()+120*attackingWeaponDirection);
-                    
-                }
-                else if(attackTimer.millisElapsed()<300){
-                    setLocation(Hero.getXPos(),Hero.getYPos());
+                
+                if(attackTimer.millisElapsed()<200){
+                    setLocation(Hero.getXPos()-20*attackingWeaponDirection,Hero.getYPos()+30);
     
-                    setRotation(((attackTimer.millisElapsed()/2)-80)*attackingWeaponDirection);
-                    move(80*attackingWeaponDirection);
+                    setRotation(((attackTimer.millisElapsed()/4)-45)*attackingWeaponDirection);
+                    move(80*attackingWeaponDirection-attackTimer.millisElapsed()/8*attackingWeaponDirection);
                     setRotation(getRotation()+120*attackingWeaponDirection);
+                    
                 }
-                else if(attackTimer.millisElapsed()>300){
+                else if(attackTimer.millisElapsed()>200){
                     attack=false;
                     setRotation(0);
                     setImage(hitbox);
-                    System.out.println("yes");
+                    followHero();
                 }
                 /**
                 if(attackTimer.millisElapsed() < 100){
@@ -233,6 +221,7 @@ public class AxeHitbox extends Entity
                 **/
             }
             if(attack==false){
+                
                 followHero();
                 x=getX();
                 y=getY();
@@ -250,6 +239,7 @@ public class AxeHitbox extends Entity
     
     public void followHero(){
         setLocation(Hero.getXPos()+weaponDirection*40,Hero.getYPos());
+        setRotation(0);
     }
     public void allignDirectionWithHero(){
         if(Hero.getXDirectionChar()=='r'){
@@ -258,6 +248,12 @@ public class AxeHitbox extends Entity
             else if(Hero.getXDirectionChar()=='l'){
                 weaponDirection=-1;
             }
+    }
+    public static int getAttackingWeaponDirection(){
+        return attackingWeaponDirection;
+    }
+    public static int getWeaponDirection(){
+        return weaponDirection;
     }
     public static int getXPosition(){
         return x;

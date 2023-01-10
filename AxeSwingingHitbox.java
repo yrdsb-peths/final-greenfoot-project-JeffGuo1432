@@ -16,12 +16,10 @@ public class AxeSwingingHitbox extends AxeHitbox
     SimpleTimer timer = new SimpleTimer();
     public AxeSwingingHitbox(){
         timer.mark();
-                setImage(swingHitbox);
-
+        setImage(swingHitbox);
     }
     public void act()
     {
-        
         MyWorld world = (MyWorld) getWorld();
         if(timer.millisElapsed()>100){
             world.removeObject(this);

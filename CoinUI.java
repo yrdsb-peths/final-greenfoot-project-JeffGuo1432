@@ -29,7 +29,7 @@ public class CoinUI extends Entity
         currentImage.scale(size,size);
         setImage(currentImage);
         world.removeObject(this);
-        world.addObject(this,20,30);
+        world.addObject(this,580,30);
     }
     public void act()
     {

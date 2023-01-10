@@ -40,7 +40,7 @@ public class Coin extends Entity
     public void act()
     {            
         if(timer.millisElapsed()>idleTime){
-            turnTowards(20,30);
+            turnTowards(580,30);
             move(speed);
             
         }

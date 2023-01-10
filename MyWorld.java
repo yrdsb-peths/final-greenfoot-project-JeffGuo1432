@@ -14,7 +14,9 @@ public class MyWorld extends World
      * 
      */
     static int worldHeight=600;   
-    static int worldWidth=400;;
+    static int worldWidth=400;
+    int hp = 1;
+    int maxHp=5;
     //here is the array of all the tiles, I have different arrays that I will use throughout the game
     //each tile has a name, and x, y coordinates
     //the name of the tile dictates the tile's image as well as hitbox
@@ -98,29 +100,21 @@ new Tile("wallD",131,298),
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(worldHeight, worldWidth, 1); 
         Hero hero = new Hero();
-        addObject(hero,100,200);
-        addObject(new HeroHitbox(),100,200);
+        addObject(hero,300,200);
+        
         addObject(new Axe(),100,200);
         addObject(new AxeHitbox(),100,200);
         
         
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        spawnSkeleton(500,Greenfoot.getRandomNumber(300+50));
-        //addObject(new Spear(),100,200);
-        
         
 
         
         
         
-
+        
         spawnMap(borderMap);
-        addObject(new CoinUI(),20,30);
+        addObject(new CoinUI(),580,30);
+        updateHealth();
         //spawnMap(level1Map);
     }
     
@@ -134,6 +128,28 @@ new Tile("wallD",131,298),
             //When a tile is created, the code prints out "newTile(tileName,x,y)" which I can then easily 
             //copy and paste into the arrays above
             System.out.println("new Tile(\""+tileName+"\","+mouse.getX()+","+mouse.getY()+"),");
+        }
+        if(Greenfoot.isKeyDown("p")){
+            spawnSkeletonScreen();
+        }
+    }
+    
+    public void updateHealth(){
+        for(int i = 0 ; i <maxHp ; i++){
+            if(i<hp){
+                addObject(new HeartUI("images/heart0.png"),50*i+35,30);
+            }
+            else{
+                addObject(new HeartUI("images/heart1.png"),50*i+35,30);
+            }
+        }
+    }
+    public void spawnSkeletonScreen(){
+        removeObjects(getObjects(Skeleton.class));
+        for(int x = 50 ; x <= 550 ; x = x + 20){
+            for(int y = 50 ; y <= 350 ; y = y +20){
+                spawnSkeleton(x,y);
+            }
         }
     }
     public void spawnMap(Tile[] map){

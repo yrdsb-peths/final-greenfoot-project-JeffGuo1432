@@ -85,6 +85,7 @@ public class Skeleton extends Enemy
             //System.out.println(moveState);
         }
         //
+
         MyWorld world = (MyWorld) getWorld();
         /**
         if(xDirection<0&canMoveLeft()==false){
@@ -123,11 +124,12 @@ public class Skeleton extends Enemy
             }
             //i called moving in the x direction attacking, they always move towards the players x location while attacking
             if (moveState=="attacking"){
+
                 deltaX = getX() - Hero.getXPos();
                 yDirection=0;
                 if(deltaX<0){
                     if(canMoveRight()){
-                        setLocation(getX()+1,getY());
+                        //setLocation(getX()+1,getY());
                         //xSpeed;
                         xDirection=1;
                         xDirectionChar='r';
@@ -135,7 +137,7 @@ public class Skeleton extends Enemy
                 }
                 if(deltaX>0){
                     if(canMoveLeft()){
-                        setLocation(getX()-1,getY());
+                        //setLocation(getX()-1,getY());
                         //xSpeed;
                         xDirection=(-1);
                         xDirectionChar='l';
@@ -147,12 +149,13 @@ public class Skeleton extends Enemy
             }
             //i called moving in the y direction routing, they always move towards the players y location while routing
             if(moveState=="routing"){
+
                 deltaY = getY() - Hero.getYPos();
                 xDirection=0;
 
                 if(deltaY>0){
                     if(canMoveUp()){
-                        setLocation(getX(),getY()-1);
+                        //setLocation(getX(),getY()-1);
     
                         yDirection=-1;
                         ySpeed=1;
@@ -160,7 +163,7 @@ public class Skeleton extends Enemy
                 }
                 if(deltaY<0){
                     if(canMoveDown()){
-                        setLocation(getX(),getY()+1);
+                        //setLocation(getX(),getY()+1);
                         ySpeed=1;
                         yDirection=1;
                     }

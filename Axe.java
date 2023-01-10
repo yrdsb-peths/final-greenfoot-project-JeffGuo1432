@@ -6,7 +6,7 @@
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Axe extends AxeHitbox
+public class Axe extends Entity
 {
     /**
      * The Axe is the first weapon that I've added to the game.
@@ -35,11 +35,20 @@ public class Axe extends AxeHitbox
     GreenfootImage attackImageRight = new GreenfootImage("images/swingingAxe_.png");
     GreenfootImage attackImageLeft = new GreenfootImage("images/swingingAxe_.png");
     SimpleTimer attackTimer = new SimpleTimer();
-    GreenfootImage swingImage0=new GreenfootImage("images/axeSwing_/swing_0.png");
-    GreenfootImage swingImage1=new GreenfootImage("images/axeSwing_/swing_1.png");
-    GreenfootImage swingImage2=new GreenfootImage("images/axeSwing_/swing_2.png");
-    GreenfootImage swingImage3=new GreenfootImage("images/axeSwing_/swing_3.png");
+    GreenfootImage[] swingAnimationRight={new GreenfootImage("images/axeSwing_/swing_0.png"),
+    new GreenfootImage("images/axeSwing_/swing_1.png"),
+    new GreenfootImage("images/axeSwing_/swing_2.png"),
+    new GreenfootImage("images/axeSwing_/swing_3.png")};
+    GreenfootImage[] swingAnimation = new GreenfootImage[swingAnimationRight.length];
+    GreenfootImage[] swingAnimationLeft={new GreenfootImage("images/axeSwing_/swing_0.png"),
+    new GreenfootImage("images/axeSwing_/swing_1.png"),
+    new GreenfootImage("images/axeSwing_/swing_2.png"),
+    new GreenfootImage("images/axeSwing_/swing_3.png")};
+
     int attackCooldown = 0;
+    boolean attack = false;
+    int weaponDirection = 0;
+    int attackingWeaponDirection = 1;
     public Axe()
     {
         //Initalizes the images
@@ -51,10 +60,14 @@ public class Axe extends AxeHitbox
         attackImageLeft.mirrorHorizontally();
         attackImageLeft.scale(36,144);
         
-        swingImage0.scale(144,72);
-        swingImage1.scale(144,72);
-        swingImage2.scale(144,72);
-        swingImage3.scale(144,72);
+        for (int i = 0 ; i<swingAnimationRight.length ; i++){
+            swingAnimationRight[i].scale(144,72);
+            
+            //swingAnimationLeft[i]=swingAnimationRight[i];
+            swingAnimationLeft[i].mirrorHorizontally();
+            swingAnimationLeft[i].scale(144,72);
+        }
+        
     }
     public void act()
     {
@@ -67,37 +80,48 @@ public class Axe extends AxeHitbox
         world.removeObject(this);
         world.addObject(this, x, y); 
         attackCooldown-=1;
-
+        if(AxeHitbox.isThrown()){
+            if(AxeHitbox.getWeaponDirection()==1){
+                        setImage(imageRight);
+                        //System.out.println("r");
+                }
+                else{
+                        setImage(imageLeft);
+                        //System.out.println("l");
+                }
+        }
         if(AxeHitbox.isThrown()==false){
             if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
                 attackTimer.mark();
                 attackCooldown=30;
                 attack=true;
-                attackingWeaponDirection=weaponDirection;
-
+                attackingWeaponDirection=AxeHitbox.getWeaponDirection();
+                if(attackingWeaponDirection>0){
+                    swingAnimation=swingAnimationRight;
+                    System.out.println("r");
+                }
+                if(attackingWeaponDirection<0){
+                    swingAnimation=swingAnimationLeft;
+                    System.out.println("l");
+                }
             }
             if(attack==true){
                 if(attackTimer.millisElapsed()<40){
-                    setImage(swingImage0);
+                    setImage(swingAnimation[0]);
                 }
                 else if(attackTimer.millisElapsed()<80){
-                    setImage(swingImage1);
+                    setImage(swingAnimation[1]);
                 }
                 else if(attackTimer.millisElapsed()<120){
-                    setImage(swingImage2);
+                    setImage(swingAnimation[2]);
                 }
                 else if(attackTimer.millisElapsed()<160){
-                    setImage(swingImage3);
+                    setImage(swingAnimation[3]);
                 }
-                if(attackTimer.millisElapsed()<160){
+                
+                if(attackTimer.millisElapsed()<300){
                     setLocation(Hero.getXPos(),Hero.getYPos());
-                    setRotation(((attackTimer.millisElapsed()/2)-80)*attackingWeaponDirection);
-                    move(80*attackingWeaponDirection);
-                    setRotation(getRotation()+120*attackingWeaponDirection);
-                }
-                else if(attackTimer.millisElapsed()<300){
-                    setLocation(Hero.getXPos(),Hero.getYPos());
-                    setRotation(((attackTimer.millisElapsed()/2)-80)*attackingWeaponDirection);
+                    setRotation(((attackTimer.millisElapsed()/2)-100)*attackingWeaponDirection);
                     move(80*attackingWeaponDirection);
                     setRotation(getRotation()+120*attackingWeaponDirection);
                 }
@@ -106,15 +130,16 @@ public class Axe extends AxeHitbox
                     setRotation(0);
                 }
             }
-        }
-        else{
-            if(Hero.getXDirectionChar()=='r'){
-                    setImage(imageRight);
-            }
-            else{
-                    setImage(imageLeft);
+            if(attack==false){
+                if(AxeHitbox.getWeaponDirection()==1){
+                        setImage(imageRight);
+                        //System.out.println("r");
+                }
+                else{
+                        setImage(imageLeft);
+                        //System.out.println("l");
+                }
             }
         }
     }
-    
 }

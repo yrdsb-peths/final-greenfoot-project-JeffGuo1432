@@ -22,13 +22,13 @@ public class Hero extends Entity
     
     //variables used in movement along the x axis
     int xVelocity=0;
-    int xSpeed = 1;
+    int xSpeed = 2;
     static int xDirection=0;
     static char xDirectionChar = 'r';
     static int x;
     //variables used in movement along the y axis
     int yVelocity=0;
-    int ySpeed = 1;
+    int ySpeed = 2;
     static int yDirection=0;
     static int y;
     
