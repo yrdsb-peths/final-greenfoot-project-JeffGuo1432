@@ -43,18 +43,24 @@ public class Goblin extends Enemy
     String previousMoveState="attacking";
     int changeStateMillis;
     SimpleTimer moveStateTimer = new SimpleTimer();
-    SimpleTimer hurtPlayerTimer = new SimpleTimer();
-    int angle;
-    boolean spearCreated;
-    public Goblin(){
-        
-         
+    int targetX;
+    int targetY;
     
-        
+    //variables used in combat
+    SimpleTimer hurtPlayerTimer = new SimpleTimer();
+    int knockbackStrength;
+    SimpleTimer damageCooldownTimer = new SimpleTimer();
+    int health=2;
+    int chargeAngle;
+    int randomDirection;
+    public Goblin(){
+        animate(0);
+        moveState="walking";
+        health=2;
+        randomDirection=(Greenfoot.getRandomNumber(2)*2)-1;
     }
     public void animate(int animationDelay)
     {
-        
         if(animationTimer.millisElapsed() < animationDelay)
         {
             return;
@@ -72,32 +78,180 @@ public class Goblin extends Enemy
         MyWorld world = (MyWorld) getWorld();
         x=getX();
         y=getY();
-        if(moveState=="walking"){
-            if(Hero.getXPos()>this.getX()){
-                setLocation(getX()+xSpeed,getY());
+        
+        if(moveState!="hurt"&moveState!="dead"){
+            
+                        
+            if(getObjectsInRange(200,Hero.class).toString().equals("[]")==false&moveState=="walking"){
+                
+                    moveState="aiming";
+                    moveStateTimer.mark();
+                   
+                action="Idle_";
+                animationDelay=100;
+
+                if(getObjectsInRange(170,Hero.class).toString().equals("[]")==false&moveState=="walking"){
+                    action="WalkRun_";
+                    animationDelay=100;
+                    turnTowards(Hero.getXPos(),Hero.getYPos());
+                    turn(180);
+                    move(1);
+                    setRotation(0);
+                }
+                
+                
+                
             }
-            if(Hero.getXPos()<this.getX()){
-                setLocation(getX()-xSpeed,getY());
-            }
-            if(Hero.getYPos()>this.getY()){
-                setLocation(getX(),getY()+ySpeed);
-            }
-            if(Hero.getYPos()<this.getY()){
-                setLocation(getX(),getY()-ySpeed);
+            else{
+                if(moveState=="walking"){
+                    action="WalkRun_";
+                    animationDelay=100;
+                    
+                    if(Hero.getXPos()>this.getX()){
+                        setLocation(getX()+xSpeed,getY());
+                    }
+                    if(Hero.getXPos()<this.getX()){
+                        setLocation(getX()-xSpeed,getY());
+                    }
+                    if(Hero.getYPos()>this.getY()){
+                        setLocation(getX(),getY()+ySpeed);
+                    }
+                    if(Hero.getYPos()<this.getY()){
+                        setLocation(getX(),getY()-ySpeed);
+                    }
+                    
+                }
             }
             
-        }
-        if(getObjectsInRange(200,Hero.class).toString().equals("[]")==false){
-            moveState="aiming";
-        }
-        else{
-            moveState="walking";
-        }
-        if(moveState=="aiming"){
-            animationDelay=160;
+            if(moveState=="aiming"){
+                action="Idle_";
+                if(moveStateTimer.millisElapsed()>Greenfoot.getRandomNumber(1000)){
+                    turnTowards(Hero.getXPos(),Hero.getYPos());
+                    turn(90);
+                    smartMove(1*randomDirection);
+                    setRotation(0);
+                }
+                
+                if(moveStateTimer.millisElapsed()%4==0&animationDelay>40){
+                    animationDelay-=3;
+                }
+                
+                
+                if(moveStateTimer.millisElapsed()>1500+Greenfoot.getRandomNumber(3000)){
+                    moveState="attacking";
+                    targetX=Hero.getXPos();
+                    targetY=Hero.getYPos();
+                    turnTowards(targetX,targetY);
+                    chargeAngle=getRotation();
+                    moveStateTimer.mark();
+                }
+                
+            }
+            if(moveState=="attacking"){
+                action="WalkRun_";
+                animationDelay=20;
+                setRotation(chargeAngle);
+                smartMove(5);
+                setRotation(0);
+                
+            }
             
+            if(isTouching(AxeHitbox.class)&((AxeHitbox.isThrown()&AxeHitbox.isStuck()==false)||AxeHitbox.isAttacking())){
+                takeDamage();
+                moveStateTimer.mark();
+                if(AxeHitbox.isAttacking()){
+                    knockbackStrength=10;
+                }
+            }
         }
+        if(knockbackStrength>0){
+            turnTowards(Hero.getXPos(),Hero.getYPos());
+            turn(180);
+            move(knockbackStrength);
+            smartMove(knockbackStrength);
+            
+
+            knockbackStrength-=1;
+            setRotation(0);
+            
+            }
+            //System.out.println(moveState);
+        //here is the animation for the hurt and death, I wanted the hurt animation to be faster therefore the delay is only 70
+        if(moveState=="hurt"){
+            if(action!="Hurt_"){
+                imageIndex=1;
+            }
+            action="Hurt_";
+            animationDelay=125;
+            if(damageCooldownTimer.millisElapsed()>501){
+                moveState="walking";
+                action="Idle_";
+            }
+        }
+        
+        if(health<=0||moveState=="dead"){
+            xVelocity=0;
+            yVelocity=0;
+            action="Death_";
+            animationDelay=200;
+            moveState="dead";
+            if(moveStateTimer.millisElapsed()>animationDelay*4){
+                world.spawnCoin(getX(),getY());
+                world.removeObject(this);
+                
+            }
+        }
+        
         animate(animationDelay);
+    }
+   
+    public void takeDamage(){
+        if(damageCooldownTimer.millisElapsed()>1000){
+        
+            health--;
+            moveState="hurt";
+            imageIndex=1;
+                action="Hurt_";
+                animate(0);
+            damageCooldownTimer.mark();
+        }
+    }
+    public void smartMove(int distance){
+        if(0<=getRotation()&getRotation()<=90){
+            if(canMoveDown()&canMoveRight()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(90<getRotation()&getRotation()<=180){
+            if(canMoveDown()&canMoveLeft()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(180<getRotation()&getRotation()<=270){
+            if(canMoveUp()&canMoveLeft()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(270<getRotation()&getRotation()<=360){
+            if(canMoveUp()&canMoveRight()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+    }
+    public void knockback(int strength){
+        knockbackStrength=strength;
     }
     public static int getXPos(){
         return x;

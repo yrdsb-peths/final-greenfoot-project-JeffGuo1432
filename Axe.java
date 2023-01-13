@@ -56,16 +56,16 @@ public class Axe extends Entity
         imageRight.scale(36,72);
         imageLeft.mirrorHorizontally();
         imageLeft.scale(36,72);
-        attackImageRight.scale(36,144);
+        attackImageRight.scale(18,144);
         attackImageLeft.mirrorHorizontally();
-        attackImageLeft.scale(36,144);
+        attackImageLeft.scale(18,72);
         
         for (int i = 0 ; i<swingAnimationRight.length ; i++){
-            swingAnimationRight[i].scale(144,72);
+            swingAnimationRight[i].scale(108,54);
             
             //swingAnimationLeft[i]=swingAnimationRight[i];
             swingAnimationLeft[i].mirrorHorizontally();
-            swingAnimationLeft[i].scale(144,72);
+            swingAnimationLeft[i].scale(108,54);
         }
         
     }
@@ -93,16 +93,15 @@ public class Axe extends Entity
         if(AxeHitbox.isThrown()==false){
             if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
                 attackTimer.mark();
-                attackCooldown=30;
+                attackCooldown=50;
                 attack=true;
                 attackingWeaponDirection=AxeHitbox.getWeaponDirection();
                 if(attackingWeaponDirection>0){
                     swingAnimation=swingAnimationRight;
-                    System.out.println("r");
                 }
                 if(attackingWeaponDirection<0){
                     swingAnimation=swingAnimationLeft;
-                    System.out.println("l");
+                    
                 }
             }
             if(attack==true){

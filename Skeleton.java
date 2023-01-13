@@ -22,7 +22,7 @@ public class Skeleton extends Enemy
     
     //variables used in movement along the x axis
     int xVelocity=0;
-    int xSpeed = 4;
+    int xSpeed = 2;
     int deltaX;
     static int xDirection=0;
     static char xDirectionChar = 'r';
@@ -43,8 +43,13 @@ public class Skeleton extends Enemy
     String previousMoveState="attacking";
     int changeStateMillis;
     SimpleTimer moveStateTimer = new SimpleTimer();
-    SimpleTimer hurtPlayerTimer = new SimpleTimer();
     
+    
+    //variables used in combat
+    SimpleTimer hurtPlayerTimer = new SimpleTimer();
+    int knockbackStrength=0;
+    SimpleTimer damageCooldownTimer = new SimpleTimer();
+    int health=1;
     public Skeleton(){
         animate(0);
         //offset to make sure the skeletons don't clump up onto one pixel
@@ -65,7 +70,6 @@ public class Skeleton extends Enemy
     }
     public void animate(int animationDelay)
     {
-        
         if(animationTimer.millisElapsed() < animationDelay)
         {
             return;
@@ -85,7 +89,7 @@ public class Skeleton extends Enemy
             //System.out.println(moveState);
         }
         //
-
+        
         MyWorld world = (MyWorld) getWorld();
         /**
         if(xDirection<0&canMoveLeft()==false){
@@ -129,7 +133,7 @@ public class Skeleton extends Enemy
                 yDirection=0;
                 if(deltaX<0){
                     if(canMoveRight()){
-                        //setLocation(getX()+1,getY());
+                        setLocation(getX()+xSpeed,getY());
                         //xSpeed;
                         xDirection=1;
                         xDirectionChar='r';
@@ -137,7 +141,7 @@ public class Skeleton extends Enemy
                 }
                 if(deltaX>0){
                     if(canMoveLeft()){
-                        //setLocation(getX()-1,getY());
+                        setLocation(getX()-xSpeed,getY());
                         //xSpeed;
                         xDirection=(-1);
                         xDirectionChar='l';
@@ -155,7 +159,7 @@ public class Skeleton extends Enemy
 
                 if(deltaY>0){
                     if(canMoveUp()){
-                        //setLocation(getX(),getY()-1);
+                        setLocation(getX(),getY()-ySpeed);
     
                         yDirection=-1;
                         ySpeed=1;
@@ -163,7 +167,7 @@ public class Skeleton extends Enemy
                 }
                 if(deltaY<0){
                     if(canMoveDown()){
-                        //setLocation(getX(),getY()+1);
+                        setLocation(getX(),getY()+ySpeed);
                         ySpeed=1;
                         yDirection=1;
                     }
@@ -178,7 +182,7 @@ public class Skeleton extends Enemy
                 previousMoveState=moveState;
                 moveState="waiting";
                 moveStateTimer.mark();
-                changeStateMillis=500;
+                changeStateMillis=1000;
             }
             
             if(moveStateTimer.millisElapsed()>changeStateMillis&(moveState=="waiting")){
@@ -206,36 +210,108 @@ public class Skeleton extends Enemy
                 moveStateTimer.mark();
                 changeStateMillis=1000;
             }
+            moveState="waiting";
             if(isTouching(AxeHitbox.class)&((AxeHitbox.isThrown()&AxeHitbox.isStuck()==false)||AxeHitbox.isAttacking())){
-                moveState="hurt";
+                takeDamage();
                 moveStateTimer.mark();
+                if(AxeHitbox.isAttacking()){
+                    knockbackStrength=10;
+                }
+                
             }
+            
         }
+        if(knockbackStrength>0){
+            turnTowards(Hero.getXPos(),Hero.getYPos());
+            turn(180);
+            move(knockbackStrength);
+            smartMove(knockbackStrength);
+            
+            System.out.println(knockbackStrength);
+
+            knockbackStrength-=1;
+            setRotation(0);
+            
+            }
+            //System.out.println(moveState);
         //here is the animation for the hurt and death, I wanted the hurt animation to be faster therefore the delay is only 70
         if(moveState=="hurt"){
-            xVelocity=0;
-            yVelocity=0;
+            if(action!="Hurt_"){
+                imageIndex=1;
+            }
             action="Hurt_";
-            animationDelay=70;
-            if(moveStateTimer.millisElapsed()>animationDelay*4){
-                moveState="dead";
-
+            animationDelay=125;
+            if(damageCooldownTimer.millisElapsed()>501){
+                moveState="attacking";
+                action="Idle_";
             }
         }
-    
-        if(moveState=="dead"){
+        
+        if(health<=0||moveState=="dead"){
             xVelocity=0;
             yVelocity=0;
             action="Death_";
             animationDelay=200;
+            moveState="dead";
             if(moveStateTimer.millisElapsed()>animationDelay*4){
                 world.spawnCoin(getX(),getY());
                 world.removeObject(this);
                 
             }
         }
+        
         animate(animationDelay);
-        //setLayers();
+        
+    }
+    public void takeDamage(){
+        if(damageCooldownTimer.millisElapsed()>1000){
+        
+            health--;
+            moveState="hurt";
+            imageIndex=1;
+                action="Hurt_";
+                animate(0);
+            damageCooldownTimer.mark();
+        }
+    }
+    public void smartMove(int distance){
+        if(0<getRotation()&getRotation()<=90){
+            if(canMoveDown()&canMoveRight()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(90<getRotation()&getRotation()<=180){
+            if(canMoveDown()&canMoveLeft()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(180<getRotation()&getRotation()<=270){
+            if(canMoveUp()&canMoveLeft()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+                System.out.println("yes");
+            }
+        }
+        if(270<getRotation()&getRotation()<=360){
+            if(canMoveUp()&canMoveRight()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+    }
+    
+    public void knockback(int strength){
+        knockbackStrength=strength;
     }
     public boolean canKill(){
         if(moveState!="hurt"&moveState!="dead"){

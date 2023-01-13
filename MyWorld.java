@@ -1,5 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
+import java.awt.List;
 /**
  * Write a description of class MyWorld here.
  * 
@@ -15,8 +15,11 @@ public class MyWorld extends World
      */
     static int worldHeight=600;   
     static int worldWidth=400;
-    int hp = 1;
-    int maxHp=5;
+    int health = 5;
+    int maxHealth=5;
+    int coins =0;
+    Color coinsColor = new Color(255,200,126);
+    public Label coinsLabel = new Label(coins,30);
     //here is the array of all the tiles, I have different arrays that I will use throughout the game
     //each tile has a name, and x, y coordinates
     //the name of the tile dictates the tile's image as well as hitbox
@@ -99,14 +102,14 @@ new Tile("wallD",131,298),
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(worldHeight, worldWidth, 1); 
+        
         Hero hero = new Hero();
-        addObject(hero,300,200);
+        addObject(hero,500,200);
         
         addObject(new Axe(),100,200);
         addObject(new AxeHitbox(),100,200);
         
-        
-        
+        //spawnGoblinGang(100,100);
 
         
         
@@ -114,10 +117,15 @@ new Tile("wallD",131,298),
         
         spawnMap(borderMap);
         addObject(new CoinUI(),580,30);
+        
+        addObject(coinsLabel, 550,30);
+        coinsLabel.setFillColor(coinsColor);
         updateHealth();
         //spawnMap(level1Map);
     }
-    
+    public int getRandomNum(int x, int y){
+        return Greenfoot.getRandomNumber(y-x)+x;
+    }
     public void act(){
         
         //Whenever the mouse button is clicked, a tile with the name of tileName is spawned on the location of the mouse
@@ -131,16 +139,36 @@ new Tile("wallD",131,298),
         }
         if(Greenfoot.isKeyDown("p")){
             spawnSkeletonScreen();
+            health=100;
+            maxHealth=100;
+            updateHealth();
+        }
+        if(health==0){
+            removeObjects(getObjects(Enemy.class));
         }
     }
     
+    public void increaseCoins(){
+        coins++;
+        coinsLabel.setValue(coins);
+
+    }
+    public void increaseHealth(){
+        health++;
+        updateHealth();
+    }   
+    public void decreaseHealth(){
+        health--;
+        updateHealth();
+    }
     public void updateHealth(){
-        for(int i = 0 ; i <maxHp ; i++){
-            if(i<hp){
-                addObject(new HeartUI("images/heart0.png"),50*i+35,30);
+        removeObjects(getObjects(HeartUI.class));
+        for(int i = 0 ; i <maxHealth ; i++){
+            if(i<health){
+                addObject(new HeartUI("images/heart0.png"),40*i+35,30);
             }
             else{
-                addObject(new HeartUI("images/heart1.png"),50*i+35,30);
+                addObject(new HeartUI("images/heart1.png"),40*i+35,30);
             }
         }
     }
@@ -148,8 +176,20 @@ new Tile("wallD",131,298),
         removeObjects(getObjects(Skeleton.class));
         for(int x = 50 ; x <= 550 ; x = x + 20){
             for(int y = 50 ; y <= 350 ; y = y +20){
-                spawnSkeleton(x,y);
+                spawnGoblin(x,y);
             }
+        }
+    }
+    public void spawnGoblinGang(int xPos, int yPos){
+        for(int x = 0 ; x <= 100 ; x = x + 20){
+            for(int y = 0 ; y <= 100 ; y = y +20){
+                spawnGoblin(x+xPos,y+yPos);
+            }
+        }
+    }
+    public void spawnEnemies(Enemy[] e){
+        for(int i = 0 ; i < e.length ; i++){
+            addObject(e[i],0,0);
         }
     }
     public void spawnMap(Tile[] map){

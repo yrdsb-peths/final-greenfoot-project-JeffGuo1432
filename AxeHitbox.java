@@ -44,15 +44,11 @@ public class AxeHitbox extends Entity
         thrown=false;           
         stuck=false;
         setImage(hitbox);   
-        swingingImageRight.scale(72,72);
+        //swingingImageRight.scale(40,40);
         
         
         
-        swingHitbox.scale(24,48);
-        System.out.println("- S T A R T -");
-        System.out.println("thrown:"+thrown);
-        System.out.println("attack:"+attack);
-        System.out.println("stuck:"+stuck);
+        swingHitbox.scale(12,24);
         
     }
     public void act()
@@ -63,14 +59,7 @@ public class AxeHitbox extends Entity
         count++;
         attackCooldown-=1;
         MyWorld world = (MyWorld) getWorld();
-        if(count%50==0){
-            System.out.println("--------------------------"+count/50);
-            System.out.println("thrown:"+thrown);
-            System.out.println("attack:"+attack);
-            System.out.println("stuck:"+stuck);
-            System.out.println("catchable:"+catchable);
-            //System.out.println("attackTimer:"+attackTimer.millisElapsed());
-        }
+        
         //When a player presses "Q" the thrown variable is set to true so the Axe gets thrown
         if(Greenfoot.isKeyDown("q")){
             thrown=true;
@@ -166,7 +155,7 @@ public class AxeHitbox extends Entity
             }
             if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
                 attackTimer.mark();
-                attackCooldown=30;
+                attackCooldown=50;
                 attack=true;
                 attackingWeaponDirection=weaponDirection;
 
@@ -192,8 +181,12 @@ public class AxeHitbox extends Entity
                 if(attackTimer.millisElapsed()<200){
                     setLocation(Hero.getXPos()-20*attackingWeaponDirection,Hero.getYPos()+30);
     
-                    setRotation(((attackTimer.millisElapsed()/4)-45)*attackingWeaponDirection);
-                    move(80*attackingWeaponDirection-attackTimer.millisElapsed()/8*attackingWeaponDirection);
+                    setRotation(((attackTimer.millisElapsed()*3/10)-50)*attackingWeaponDirection);
+                    int moveDistance= (int)Math.round(0.001*(Math.pow((attackTimer.millisElapsed()-100),2))+95);
+                    
+                    move(moveDistance*attackingWeaponDirection-attackTimer.millisElapsed()/8*attackingWeaponDirection);
+                     
+                    
                     setRotation(getRotation()+120*attackingWeaponDirection);
                     
                 }

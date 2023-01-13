@@ -22,6 +22,7 @@ public class Coin extends Entity
     public Coin(){
         timer.mark();
         idleTime=Greenfoot.getRandomNumber(2)*Greenfoot.getRandomNumber(12)*100+500;
+        imageIndex=Greenfoot.getRandomNumber(3);
     }
     public void animate(int animationDelay)
     {
@@ -49,8 +50,10 @@ public class Coin extends Entity
                 speed--;
             }
         }
-        if(getX()==20&getY()==30){
+        if(getX()==580&getY()==30){
+            
             MyWorld world = (MyWorld) getWorld();
+            world.increaseCoins();
             world.removeObject(this);
             
         }
