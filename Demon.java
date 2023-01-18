@@ -27,7 +27,7 @@ public class Demon extends Enemy
         animate(200,"Ghost");
         
         if(getObjectsInRange(100,Hero.class).toString().equals("[]")==false&world.level==0){
-            System.out.println("a");
+            
             world.addObject(textLabel,getX(),getY()-30);
             if(textIndex==0){
                 text=textArray[textIndex];
@@ -36,7 +36,7 @@ public class Demon extends Enemy
         }
         
         if(Greenfoot.isKeyDown("space")&skipped==false){
-            System.out.println("b");
+            
             skipped=true;
             if(textIndex<textArray.length-1){
                 textIndex+=1;

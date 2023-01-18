@@ -45,7 +45,7 @@ public class Tile extends Obstacle
         if(getTileType().equals("door")){
             
             if(world.doorsRemoved()){
-                System.out.println("yup");
+                
                 world.removeObject(this);
             }
         }

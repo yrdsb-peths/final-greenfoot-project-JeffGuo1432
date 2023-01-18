@@ -27,7 +27,8 @@ public class MyWorld extends World
     GreenfootSound music = new GreenfootSound("sounds/jeff_video_game_INTRO.mp3");
     GreenfootSound musicMain = new GreenfootSound("sounds/jeff_video_game_MAIN.mp3");
     SimpleTimer musicTimer = new SimpleTimer();
-    
+    Label instructions1 = new Label("",30);
+            Label instructions2 = new Label("",30);
     Tile[] level1Map = {
     new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",26,253),
     new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),
@@ -87,10 +88,10 @@ new Tile("door2LR",183,218),*/};
     Tile[][]mapArray={level0Map,level1Map,level1Map,level1Map,level1Map,level1Map,level1Map,level1Map};
     
     Enemy[]level0Army={};
-    Enemy[]level1Army={new Goblin()};
-    Enemy[]level2Army={new Goblin(),new Goblin(),new Goblin()};
-    Enemy[]level3Army={new Goblin(), new Goblin(), new Goblin(),new Goblin(), new Goblin(), new Goblin()};
-    Enemy[]level4Army={new GoblinKing()};
+    Enemy[]level1Army={new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton()};
+    Enemy[]level2Army={new Goblin(), new Goblin(), new Skeleton(), new Skeleton()};
+    Enemy[]level3Army={new Goblin(), new Goblin(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton()};
+    Enemy[]level4Army={new Goblin(), new Goblin(),new GoblinKing(), new Skeleton(), new Skeleton()};
     Enemy[][]armyArray={level0Army,level1Army,level2Army,level3Army,level4Army};
    
     
@@ -100,32 +101,14 @@ new Tile("door2LR",183,218),*/};
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(worldHeight, worldWidth, 1, false); 
         doorsRemoved=false;
-        tileName="wallCornerUL";
         
-        volume=10;
+        
+        volume=25;
         Hero hero = new Hero();
-        addObject(hero,400,200);
+        addObject(hero,300,200);
         
         addObject(new AxeHitbox(),60,200);
         addObject(new Axe(),70,200);
-        /**
-        spawnRandomInArea(new Skeleton(),300,50,550,350);
-        spawnRandomInArea(new Skeleton(),300,50,550,350);
-        spawnRandomInArea(new Skeleton(),300,50,550,350);
-        spawnRandomInArea(new Skeleton(),300,50,550,350);
-        spawnRandomInArea(new Skeleton(),300,50,550,350);
-        spawnRandomInArea(new Skeleton(),300,50,550,350);
-        spawnRandomInArea(new Skeleton(),300,50,550,350);
-        */
-        
-       /**
-        spawnRandomInArea(new GoblinKing(),300,50,550,350);
-              addObject(new Minion(50,0),0,0);
-            addObject(new Minion(-50,0),0,0);
-            addObject(new Minion(0,50),0,0);
-            addObject(new Minion(0,-50),0,0);
-        */
-        
         
         
         musicTimer.mark();
@@ -140,7 +123,19 @@ new Tile("door2LR",183,218),*/};
         //armyArray[level].set(1, new Nothing());
     }
     public void act(){
-        
+        if(level==0&getObjects(Label.class).size()<5){
+            instructions1.setValue("Press space to meleee attack");
+            instructions2.setValue("Press q and arrow keys to ranged attack");
+            
+            addObject(instructions1,300,150);
+            addObject(instructions2,300,250);
+        }
+        if(level>0){
+            
+            
+            instructions1.setValue("");
+            instructions2.setValue("");
+        }
         if(musicTimer.millisElapsed()>16000){
             musicMain.play();
         }
@@ -176,7 +171,7 @@ new Tile("door2LR",183,218),*/};
             removeObjects(getObjects(Enemy.class));
         }
         if(level>0&getObjects(Enemy.class).size()<=0){
-            System.out.println(getObjects(Enemy.class).size()); 
+            
             doorsRemoved=true;
         }
         else if(level>0){
@@ -213,7 +208,7 @@ new Tile("door2LR",183,218),*/};
         for(int i = 0 ; i < armyArray[level].length ; i++){
             
             spawnRandomInArea(armyArray[level][i],100,50,550,350);
-            System.out.println(armyArray[level][i]);
+            
             armyArray[level][i].setEnemyNumber(i);
         }
     }
