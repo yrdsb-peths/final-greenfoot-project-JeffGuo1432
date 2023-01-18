@@ -22,6 +22,7 @@ public class Coin extends Entity
     public Coin(){
         timer.mark();
         idleTime=Greenfoot.getRandomNumber(2)*Greenfoot.getRandomNumber(12)*100+500;
+        imageIndex=Greenfoot.getRandomNumber(3);
     }
     public void animate(int animationDelay)
     {
@@ -40,7 +41,7 @@ public class Coin extends Entity
     public void act()
     {            
         if(timer.millisElapsed()>idleTime){
-            turnTowards(20,30);
+            turnTowards(580,30);
             move(speed);
             
         }
@@ -49,8 +50,11 @@ public class Coin extends Entity
                 speed--;
             }
         }
-        if(getX()==20&getY()==30){
+        if(getX()==580&getY()==30){
+            
             MyWorld world = (MyWorld) getWorld();
+            new GreenfootSound("sounds/Coin_/Coin_"+Greenfoot.getRandomNumber(2)+".mp3").play();
+            world.increaseCoins();
             world.removeObject(this);
             
         }

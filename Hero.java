@@ -22,19 +22,22 @@ public class Hero extends Entity
     
     //variables used in movement along the x axis
     int xVelocity=0;
-    int xSpeed = 3;
+    int xSpeed = 2;
     static int xDirection=0;
     static char xDirectionChar = 'r';
     static int x;
     //variables used in movement along the y axis
     int yVelocity=0;
-    int ySpeed = 3;
+    int ySpeed = 2;
     static int yDirection=0;
     static int y;
     
+    //variables used in 
+    SimpleTimer damageCooldownTimer = new SimpleTimer();
+    
     public Hero()
     {
-        
+        animate(0);
     }
     public void animate(int animationDelay)
     {
@@ -55,63 +58,89 @@ public class Hero extends Entity
         x=getX();
         y=getY();
         
-        if(xDirection<0&canMoveLeft()==false){
-            xDirection=0;
-        }
-        if(xDirection>0&canMoveRight()==false){
-            xDirection=0;
-        }
-        if(yDirection<0&canMoveUp()==false){
-            yDirection=0;
-        }
-        if(yDirection>0&canMoveDown()==false){
-            yDirection=0;
-        }
+        if(world.health>0){
+            
+            
+            if(xDirection<0&canMoveLeft()==false){
+                xDirection=0;
+            }
+            if(xDirection>0&canMoveRight()==false){
+                xDirection=0;
+            }
+            if(yDirection<0&canMoveUp()==false){
+                yDirection=0;
+            }
+            if(yDirection>0&canMoveDown()==false){
+                yDirection=0;
+            }
+            
+            setLocation(getX()+xVelocity,getY()+yVelocity);
+            xVelocity=xDirection*xSpeed;
+            if((xVelocity==0)&(yVelocity==0)){
+                action="Idle_";
+                animationDelay=160;
+            }
+            else{
+                action="WalkRun_";
+                animationDelay=100;
+            }
+            //this slows the player down when they are carrying an axe, because it is heavy
+            
+            
+            if(Greenfoot.isKeyDown("right")){
+                xDirection=1;
+                xDirectionChar='r';
+            }
+            if(Greenfoot.isKeyDown("left")){
+                xDirection=-1;
+                xDirectionChar='l';
+            }
+            
+            if(Greenfoot.isKeyDown("right")==false&(Greenfoot.isKeyDown("left")==false)){
+                xDirection=0;
+            }
         
-        setLocation(getX()+xVelocity,getY()+yVelocity);
-        xVelocity=xDirection*xSpeed;
-        if((xVelocity==0)&(yVelocity==0)){
-            action="Idle_";
-            animationDelay=160;
+            yVelocity=yDirection*ySpeed;
+            
+            if(Greenfoot.isKeyDown("down")){
+                yDirection=1;
+            }
+            if(Greenfoot.isKeyDown("up")){
+                yDirection=-1;
+            }
+            if(Greenfoot.isKeyDown("down")==false&(Greenfoot.isKeyDown("up")==false)){
+                yDirection=0;
+            }
+            
+            if(isTouchingSkeleton()||isTouchingGoblin()){
+                action="Hurt_";         
+                animationDelay=125;
+                
+            }
+            if(action=="Hurt_"&damageCooldownTimer.millisElapsed()>500){
+                imageIndex=1;
+                animate(0);
+                
+                world.decreaseHealth();
+                damageCooldownTimer.mark();
+                knockSkeletons(100,4);
+            }
+            animate(animationDelay);
         }
         else{
-            action="WalkRun_";
-            animationDelay=100;
-        }
-        //this slows the player down when they are carrying an axe, because it is heavy
-        
-        
-        if(Greenfoot.isKeyDown("right")){
-            xDirection=1;
-            xDirectionChar='r';
-        }
-        if(Greenfoot.isKeyDown("left")){
-            xDirection=-1;
-            xDirectionChar='l';
-        }
-        
-        if(Greenfoot.isKeyDown("right")==false&(Greenfoot.isKeyDown("left")==false)){
-            xDirection=0;
-        }
-    
-        yVelocity=yDirection*ySpeed;
-        
-        if(Greenfoot.isKeyDown("down")){
-            yDirection=1;
-        }
-        if(Greenfoot.isKeyDown("up")){
-            yDirection=-1;
-        }
-        if(Greenfoot.isKeyDown("down")==false&(Greenfoot.isKeyDown("up")==false)){
-            yDirection=0;
-        }
-        if(Greenfoot.isKeyDown("p")){
-            System.out.println(getY());
-        }
-        if(isTouchingSkeleton()){
-            action="Hurt_";
+            if(action!="Death_"){
+                imageIndex=1;
+            }
+            action="Death_";
+            
+            
+            
+            if(imageIndex<3){
+                animate(1000);
+            }
         }
         /**
+         * 
          * //the code below was meant to slow down the player when they were moving diagonally, using pythagorean theorem
         if((xVelocity!=0)&(yVelocity!=0)){
             double xVelocityD = xVelocity;
@@ -120,8 +149,29 @@ public class Hero extends Entity
             yVelocity=(int) Math.round(yVelocityD/1.41);
         }
         **/
-        animate(animationDelay);
+        if(getX()>610){
+            setLocation(-10,getY());
+            world.levelUp();
+        }
+        if(getX()<-10){
+            setLocation(610,getY());
+            world.levelDown();
+        }
         setLayers();
+    }
+    public void knockSkeletons(int range,int strength){
+        for(Class c: new Class[]{Skeleton.class})
+        {
+            
+            List<Skeleton> bs = getObjectsInRange(range,c);
+            
+            for(Skeleton b: bs)
+            {
+                if(b.canKill()){
+                    b.knockback(strength);
+                }
+            }
+        }
     }
     public boolean isTouchingSkeleton()
     {
@@ -133,9 +183,27 @@ public class Hero extends Entity
             for(Skeleton b: bs)
             {
                 if(b.canKill()){
-                if(b.getX()+30>=this.getX()&b.getX()-30<=this.getX()&b.getY()+60>=this.getY()&b.getY()-60<=this.getY()){
-                    return true;
+                    if(b.getX()+30>=this.getX()&b.getX()-30<=this.getX()&b.getY()+60>=this.getY()&b.getY()-60<=this.getY()){
+                        return true;
+                    }
                 }
+            }
+        }
+        return false;
+    }
+     public boolean isTouchingGoblin()
+    {
+        for(Class c: new Class[]{Goblin.class})
+        {
+            
+            List<Goblin> bs = getIntersectingObjects(c);
+            
+            for(Goblin b: bs)
+            {
+                if(b.canKill()){
+                    if(b.getX()+30>=this.getX()&b.getX()-30<=this.getX()&b.getY()+60>=this.getY()&b.getY()-60<=this.getY()){
+                        return true;
+                    }
                 }
             }
         }
@@ -197,6 +265,7 @@ public class Hero extends Entity
                 if(b.getX() > this.getX()&b.getTileDirection().indexOf("L")!=-1){
                     if(b.getY()>=this.getY()-10&b.getY()<=this.getY()+46){
                         if(b.getX()<=this.getX()+42){
+                            
                             return false;
                         }
                     }
@@ -245,7 +314,7 @@ public class Hero extends Entity
                 
                 if(b.getY() > this.getY()&b.getTileDirection().indexOf("U")!=-1){
                     if(b.getX()<=this.getX()+30&b.getX()>=this.getX()-30){
-                        if(b.getY()<=this.getY()+35){
+                        if(b.getY()<=this.getY()+40){
                             return false;
                         }
                     }

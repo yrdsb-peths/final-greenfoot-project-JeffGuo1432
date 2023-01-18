@@ -22,7 +22,7 @@ public class Goblin extends Enemy
     
     //variables used in movement along the x axis
     int xVelocity=0;
-    int xSpeed = 4;
+    int xSpeed = 1;
     int deltaX;
     static int xDirection=0;
     static char xDirectionChar = 'r';
@@ -31,7 +31,7 @@ public class Goblin extends Enemy
     
     //variables used in movement along the y axis
     int yVelocity=0;
-    int ySpeed = 2;
+    int ySpeed = 1;
     int deltaY;
     int yDirection=0;
     static int y;
@@ -43,36 +43,36 @@ public class Goblin extends Enemy
     String previousMoveState="attacking";
     int changeStateMillis;
     SimpleTimer moveStateTimer = new SimpleTimer();
-    SimpleTimer hurtPlayerTimer = new SimpleTimer();
+    int targetX;
+    int targetY;
     
+    //variables used in combat
+    SimpleTimer hurtPlayerTimer = new SimpleTimer();
+    int knockbackStrength;
+    SimpleTimer damageCooldownTimer = new SimpleTimer();
+    int health=2;
+    int chargeAngle;
+    int randomDirection;
+    boolean canDropCoin=true;
     public Goblin(){
         animate(0);
-        //offset to make sure the skeletons don't clump up onto one pixel
-        xOffset=Greenfoot.getRandomNumber(100)-50;
-        yOffset=Greenfoot.getRandomNumber(100)-50;
+        MyWorld world = (MyWorld) getWorld();
+
         
-        //i gave each skeleton a "personality" to add some variation in their movements
-        if(Greenfoot.getRandomNumber(2)==0){
-            moveState="attacking";
-        }
-        if(Greenfoot.getRandomNumber(2)==0){
-            personality="erratic";
-        }
-        if(Greenfoot.getRandomNumber(8)==0){
-            personality="smart";
-        }
-        personality="smart";
+        moveState="walking";
+        health=2;
+        randomDirection=(Greenfoot.getRandomNumber(2)*2)-1;
+        
     }
     public void animate(int animationDelay)
     {
-        
         if(animationTimer.millisElapsed() < animationDelay)
         {
             return;
         }
         animationTimer.mark();
         imageIndex = (imageIndex + 1 )% idle.length;
-        GreenfootImage currentImage = new GreenfootImage("images/goblin_/"+action+"/"+xDirectionChar+action+imageIndex+".png");
+        GreenfootImage currentImage = new GreenfootImage("images/orc_/"+action+"/"+xDirectionChar+action+imageIndex+".png");
         currentImage.scale(72,72);
         setImage(currentImage);
     }
@@ -80,160 +80,186 @@ public class Goblin extends Enemy
     public void act()
     {
         // Add your action code here.
-        count++;
-        if(count%100==0){
-            //System.out.println(moveState);
-        }
-        //
         MyWorld world = (MyWorld) getWorld();
-        /**
-        if(xDirection<0&canMoveLeft()==false){
-            xDirection=0;
-        }
-        if(xDirection>0&canMoveRight()==false){
-            xDirection=0;
-        }
-        if(yDirection<0&canMoveUp()==false){
-            yDirection=0;
-        }
-        if(yDirection>0&canMoveDown()==false){
-            yDirection=0;
-        }
-        **/
-        //System.out.println(getX());
-        //setLocation(getX()+xVelocity,getY()+yVelocity);
-        //xVelocity=xDirection*xSpeed;
-        //yVelocity=yDirection*ySpeed;
+        x=getX();
+        y=getY();
+        
         if(moveState!="hurt"&moveState!="dead"){
-            animationDelay=200;
-            //a skeleton with the personality "smart" will try to dodge the players axes
-            if(personality=="smart"&AxeHitbox.isThrown()){
-                if(Hero.getYPos()<getY()){
-                    yDirection=1;
-                    ySpeed=4;
-                }
-                if(Hero.getYPos()>getY()){
-                    yDirection=-1;
-                    ySpeed=4;
-                }
-            }
-            if(moveState=="waiting"){
-                xDirection=0;
-                yDirection=0;
-            }
-            //i called moving in the x direction attacking, they always move towards the players x location while attacking
-            if (moveState=="attacking"){
-                deltaX = getX() - Hero.getXPos();
-                yDirection=0;
-                if(deltaX<0){
-                    if(canMoveRight()){
-                        setLocation(getX()+1,getY());
-                        //xSpeed;
-                        xDirection=1;
-                        xDirectionChar='r';
-                    }
-                }
-                if(deltaX>0){
-                    if(canMoveLeft()){
-                        setLocation(getX()-1,getY());
-                        //xSpeed;
-                        xDirection=(-1);
-                        xDirectionChar='l';
-                    }
-                }
-                if(Hero.getXPos()==getX()) {
-                    moveState="routing";
-                }
-            }
-            //i called moving in the y direction routing, they always move towards the players y location while routing
-            if(moveState=="routing"){
-                deltaY = getY() - Hero.getYPos();
-                xDirection=0;
-
-                if(deltaY>0){
-                    if(canMoveUp()){
-                        setLocation(getX(),getY()-1);
-    
-                        yDirection=-1;
-                        ySpeed=1;
-                    }
-                }
-                if(deltaY<0){
-                    if(canMoveDown()){
-                        setLocation(getX(),getY()+1);
-                        ySpeed=1;
-                        yDirection=1;
-                    }
-                }
-                if(deltaY==0) {
-                    moveState="attacking";
-                }
-            }
-                //i added a waiting period to make the skeletons easier to handle, and to give the player some breathing room
-            if(moveStateTimer.millisElapsed()>changeStateMillis&(moveState=="attacking"||moveState=="routing")){
+            
+                        
+            if(getObjectsInRange(200,Hero.class).toString().equals("[]")==false&moveState=="walking"){
                 
-                previousMoveState=moveState;
-                moveState="waiting";
-                moveStateTimer.mark();
-                changeStateMillis=500;
+                    moveState="aiming";
+                    moveStateTimer.mark();
+                   
+                action="Idle_";
+                animationDelay=100;
+
+                if(getObjectsInRange(170,Hero.class).toString().equals("[]")==false&moveState=="walking"){
+                    action="WalkRun_";
+                    animationDelay=100;
+                    turnTowards(Hero.getXPos(),Hero.getYPos());
+                    turn(180);
+                    move(1);
+                    setRotation(0);
+                }
+                
+                
+                
+            }
+            else{
+                if(moveState=="walking"){
+                    action="WalkRun_";
+                    animationDelay=100;
+                    
+                    if(Hero.getXPos()>this.getX()){
+                        setLocation(getX()+xSpeed,getY());
+                    }
+                    if(Hero.getXPos()<this.getX()){
+                        setLocation(getX()-xSpeed,getY());
+                    }
+                    if(Hero.getYPos()>this.getY()){
+                        setLocation(getX(),getY()+ySpeed);
+                    }
+                    if(Hero.getYPos()<this.getY()){
+                        setLocation(getX(),getY()-ySpeed);
+                    }
+                    
+                }
             }
             
-            if(moveStateTimer.millisElapsed()>changeStateMillis&(moveState=="waiting")){
-                //a skeleton with the personality "robotic" will always move in the x axis, then y, then x, then y, then x ...
-                
-                if(personality=="robotic"){
-                    if(previousMoveState=="attacking"){
-                        moveState="routing";
-                    }
-                    if(previousMoveState=="routing"){
-                        moveState="attacking";
-                    }
-                }
-                //a skeleton with the personality "erratic" chooses randomly between moving in the x and the y axis.
-                if(personality=="erratic"||personality=="smart"){
-                    if(Greenfoot.getRandomNumber(2)==0){
-                        moveState="attacking";
-                    }
-                    else{
-                        moveState="routing";
-                    }
+            if(moveState=="aiming"){
+                action="Idle_";
+                if(moveStateTimer.millisElapsed()>Greenfoot.getRandomNumber(1000)){
+                    turnTowards(Hero.getXPos(),Hero.getYPos());
+                    turn(90);
+                    smartMove(1*randomDirection);
+                    setRotation(0);
                 }
                 
-                changeOffset();
-                moveStateTimer.mark();
-                changeStateMillis=1000;
+                if(moveStateTimer.millisElapsed()%4==0&animationDelay>40){
+                    animationDelay-=3;
+                }
+                
+                
+                if(moveStateTimer.millisElapsed()>1500+Greenfoot.getRandomNumber(3000)){
+                    moveState="attacking";
+                    targetX=Hero.getXPos();
+                    targetY=Hero.getYPos();
+                    turnTowards(targetX,targetY);
+                    chargeAngle=getRotation();
+                    moveStateTimer.mark();
+                }
+                
             }
+            if(moveState=="attacking"){
+                action="WalkRun_";
+                animationDelay=20;
+                setRotation(chargeAngle);
+                smartMove(5);
+                setRotation(0);
+                
+            }
+            
             if(isTouching(AxeHitbox.class)&((AxeHitbox.isThrown()&AxeHitbox.isStuck()==false)||AxeHitbox.isAttacking())){
-                moveState="hurt";
+                takeDamage();
                 moveStateTimer.mark();
+                if(AxeHitbox.isAttacking()){
+                    knockbackStrength=10;
+                }
             }
         }
+        if(knockbackStrength>0){
+            turnTowards(Hero.getXPos(),Hero.getYPos());
+            turn(180);
+            move(knockbackStrength);
+            smartMove(knockbackStrength);
+            
+
+            knockbackStrength-=1;
+            setRotation(0);
+            
+            }
+            //System.out.println(moveState);
         //here is the animation for the hurt and death, I wanted the hurt animation to be faster therefore the delay is only 70
         if(moveState=="hurt"){
-            xVelocity=0;
-            yVelocity=0;
+            if(action!="Hurt_"){
+                imageIndex=1;
+            }
             action="Hurt_";
-            animationDelay=70;
-            if(moveStateTimer.millisElapsed()>animationDelay*4){
-                moveState="dead";
-
+            animationDelay=125;
+            if(damageCooldownTimer.millisElapsed()>501){
+                moveState="walking";
+                action="Idle_";
             }
         }
-    
-        if(moveState=="dead"){
+        
+        if(health<=0||moveState=="dead"){
             xVelocity=0;
             yVelocity=0;
             action="Death_";
             animationDelay=200;
-            //upon death the skeleton spawns a new skeleton, but I may change this later
+            moveState="dead";
             if(moveStateTimer.millisElapsed()>animationDelay*4){
-                world.spawnCoin(getX(),getY());
+                if(canDropCoin){world.spawnCoin(getX(),getY());}
                 world.removeObject(this);
-                
+                canDropCoin=false;
             }
         }
+        
         animate(animationDelay);
     }
+   
+    public void takeDamage(){
+        if(damageCooldownTimer.millisElapsed()>1000){
+        
+            health--;
+            moveState="hurt";
+            imageIndex=1;
+                action="Hurt_";
+                animate(0);
+                new GreenfootSound("sounds/Hit_/EnemyHurt_"+Greenfoot.getRandomNumber(1)+".mp3").play();
+            damageCooldownTimer.mark();
+        }
+    }
+    public void smartMove(int distance){
+        if(0<=getRotation()&getRotation()<=90){
+            if(canMoveDown()&canMoveRight()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(90<getRotation()&getRotation()<=180){
+            if(canMoveDown()&canMoveLeft()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(180<getRotation()&getRotation()<=270){
+            if(canMoveUp()&canMoveLeft()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+        if(270<getRotation()&getRotation()<=360){
+            if(canMoveUp()&canMoveRight()){
+                move(distance);
+            }
+            else{
+                moveState="dead";
+            }
+        }
+    }
+    public void knockback(int strength){
+        knockbackStrength=strength;
+    }
+    
     public boolean canKill(){
         if(moveState!="hurt"&moveState!="dead"){
             return true;
