@@ -120,6 +120,7 @@ public class Hero extends Entity
             if(action=="Hurt_"&damageCooldownTimer.millisElapsed()>500){
                 imageIndex=1;
                 animate(0);
+                
                 world.decreaseHealth();
                 damageCooldownTimer.mark();
                 knockSkeletons(100,4);
@@ -148,7 +149,14 @@ public class Hero extends Entity
             yVelocity=(int) Math.round(yVelocityD/1.41);
         }
         **/
-        
+        if(getX()>610){
+            setLocation(-10,getY());
+            world.levelUp();
+        }
+        if(getX()<-10){
+            setLocation(610,getY());
+            world.levelDown();
+        }
         setLayers();
     }
     public void knockSkeletons(int range,int strength){
@@ -257,6 +265,7 @@ public class Hero extends Entity
                 if(b.getX() > this.getX()&b.getTileDirection().indexOf("L")!=-1){
                     if(b.getY()>=this.getY()-10&b.getY()<=this.getY()+46){
                         if(b.getX()<=this.getX()+42){
+                            
                             return false;
                         }
                     }

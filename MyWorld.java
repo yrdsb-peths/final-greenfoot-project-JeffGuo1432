@@ -18,118 +18,147 @@ public class MyWorld extends World
     int health = 5;
     int maxHealth=5;
     int coins =0;
+    int level =0;
+    int volume=0;
+    public String tileName;
+    static boolean doorsRemoved = false;
     Color coinsColor = new Color(255,200,126);
     public Label coinsLabel = new Label(coins,30);
-    //here is the array of all the tiles, I have different arrays that I will use throughout the game
-    //each tile has a name, and x, y coordinates
-    //the name of the tile dictates the tile's image as well as hitbox
-    //the location is not a precise location, since the tiles are placed by hand
-    //the tile object has code that will place the tile in the correct location later
-       
-    //the array "borderMap" holds the tiles that make up the outer edge of the screen
-    Tile[] borderMap = {new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",18,182),new Tile("wallR",21,225),new Tile("wallR",26,253),new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),new Tile("wallD",145,20),new Tile("wallD",194,23),new Tile("wallR",18,105),new Tile("wallD",224,23),new Tile("wallD",267,22),new Tile("wallD",309,22),new Tile("wallD",346,23),new Tile("wallD",392,24),new Tile("wallD",421,22),new Tile("wallD",460,22),new Tile("wallD",504,22),new Tile("wallD",534,22),new Tile("wallL",580,62),new Tile("wallL",588,103),new Tile("wallL",581,142),new Tile("wallL",582,191),new Tile("wallL",590,224),new Tile("wallL",577,259),new Tile("wallL",583,296),new Tile("wallL",593,332),new Tile("wallL",592,19),new Tile("wallCornerUR",33,378),new Tile("wallU",72,378),new Tile("wallU",98,378),new Tile("wallU",133,382),new Tile("wallU",174,383),new Tile("wallU",218,384),new Tile("wallU",251,385),new Tile("wallU",299,381),new Tile("wallU",342,383),new Tile("wallU",384,383),new Tile("wallU",421,386),new Tile("wallU",461,388),new Tile("wallU",500,387),new Tile("wallU",536,386),new Tile("wallCornerUL",572,385)};
-    //the array "level1Map" holds the tiles in the first level, which is spawns in three thick walls.
+    GreenfootSound music = new GreenfootSound("sounds/jeff_video_game_INTRO.mp3");
+    GreenfootSound musicMain = new GreenfootSound("sounds/jeff_video_game_MAIN.mp3");
+    SimpleTimer musicTimer = new SimpleTimer();
+    
     Tile[] level1Map = {
+    new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",26,253),
+    new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),
+    new Tile("wallD",145,20),new Tile("wallD",194,23),new Tile("wallR",18,105),new Tile("wallD",224,23),
+    new Tile("wallD",267,22),new Tile("wallD",309,22),new Tile("wallD",346,23),new Tile("wallD",392,24),
+    new Tile("wallD",421,22),new Tile("wallD",460,22),new Tile("wallD",504,22),new Tile("wallD",534,22),
+    new Tile("wallL",580,62),new Tile("wallL",588,103),new Tile("wallL",581,142),new Tile("wallL",577,259),
+    new Tile("wallL",583,296),new Tile("wallL",593,332),new Tile("wallL",592,19),new Tile("wallCornerUR",33,378),
+    new Tile("wallU",72,378),new Tile("wallU",98,378),new Tile("wallU",133,382),new Tile("wallU",174,383),
+    new Tile("wallU",218,384),new Tile("wallU",251,385),new Tile("wallU",299,381),new Tile("wallU",342,383),
+    new Tile("wallU",384,383),new Tile("wallU",421,386),new Tile("wallU",461,388),new Tile("wallU",500,387),
+    new Tile("wallU",536,386),new Tile("wallCornerUL",572,385),new Tile("wallUL",576,263),new Tile("wallD",577,132),
+    new Tile("wallD",16,147),new Tile("wallUR",20,259),new Tile("door2LR",582,168),new Tile("door2LR",583,213),};
+    
+    Tile[] level0Map = {
+    new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",26,253),
+    new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),
+    new Tile("wallD",145,20),new Tile("wallD",194,23),new Tile("wallR",18,105),new Tile("wallD",224,23),
+    new Tile("wallD",267,22),new Tile("wallD",309,22),new Tile("wallD",346,23),new Tile("wallD",392,24),
+    new Tile("wallD",421,22),new Tile("wallD",460,22),new Tile("wallD",504,22),new Tile("wallD",534,22),
+    new Tile("wallL",580,62),new Tile("wallL",588,103),new Tile("wallL",581,142),new Tile("wallL",577,259),
+    new Tile("wallL",583,296),new Tile("wallL",593,332),new Tile("wallL",592,19),new Tile("wallCornerUR",33,378),
+    new Tile("wallU",72,378),new Tile("wallU",98,378),new Tile("wallU",133,382),new Tile("wallU",174,383),
+    new Tile("wallU",218,384),new Tile("wallU",251,385),new Tile("wallU",299,381),new Tile("wallU",342,383),
+    new Tile("wallU",384,383),new Tile("wallU",421,386),new Tile("wallU",461,388),new Tile("wallU",500,387),
+    new Tile("wallU",536,386),new Tile("wallCornerUL",572,385),new Tile("wallUL",576,263),new Tile("wallD",577,132),
+    new Tile("wallR",16,147),new Tile("wallR",20,259),new Tile("wallR",18,176),new Tile("wallR",20,222),
+/**new Tile("wallR",221,34),
+new Tile("wallR",227,72),
+new Tile("wallR",223,103),
+/**new Tile("wallR",220,136),
+/**new Tile("wallR",220,179),
+/**new Tile("wallR",218,218),
+new Tile("wallR",220,256),
+new Tile("wallR",220,290),
+new Tile("wallR",218,338),
+new Tile("wallL",181,30),
+new Tile("wallL",180,51),
+new Tile("wallL",182,95),
+/**new Tile("wallL",184,134),
+new Tile("wallL",182,180),
+new Tile("wallL",179,213),
+new Tile("wallL",182,253),
+new Tile("wallL",182,287),
+new Tile("wallL",184,329),
+new Tile("wallD",167,132),
+new Tile("wallD",222,142),
+new Tile("wallUL",175,263),
+new Tile("wallUR",217,262),
+new Tile("wallCornerUR",227,375),
+new Tile("wallCornerUL",182,377),
+new Tile("door2LR",216,170),
+new Tile("door2LR",221,209),
+new Tile("door2LR",188,175),
+new Tile("door2LR",183,218),*/};
 
-new Tile("wallR",182,344),
-new Tile("wallR",176,298),
-new Tile("wallR",176,260),
-new Tile("wallR",180,218),
-new Tile("wallR",176,183),
-new Tile("wallR",334,60),
-new Tile("wallR",332,94),
-new Tile("wallR",334,138),
-new Tile("wallR",333,172),
-new Tile("wallR",336,211),
-new Tile("wallR",497,353),
-new Tile("wallR",493,301),
-new Tile("wallR",493,269),
-new Tile("wallR",495,225),
-new Tile("wallR",495,181),
-new Tile("wallL",142,343),
-new Tile("wallL",142,302),
-new Tile("wallL",143,251),
-new Tile("wallL",140,221),
-new Tile("wallL",137,178),
-new Tile("wallL",299,215),
-new Tile("wallL",298,182),
-new Tile("wallL",300,141),
-new Tile("wallL",298,108),
-new Tile("wallL",299,53),
-new Tile("wallL",467,340),
-new Tile("wallL",458,296),
-new Tile("wallL",458,253),
-new Tile("wallL",457,221),
-new Tile("wallL",451,176),
-new Tile("wallUR",183,141),
-new Tile("wallUR",494,144),
-new Tile("wallD",298,244),
-new Tile("wallD",340,245),
-new Tile("wallUL",136,136),
-new Tile("wallUL",463,146),
-new Tile("wallL",302,24),
-new Tile("wallR",342,26),};
-    //this is a map that my friend gabriel made, it is a little broken
-Tile[] gabrielsMap={
-    new Tile("wallD",44,135),
-new Tile("wallD",93,138),
-new Tile("wallD",138,138),
-new Tile("wallD",179,179),
-new Tile("wallD",219,213),
-new Tile("wallD",204,56),
-new Tile("wallD",259,102),
-new Tile("wallD",293,143),
-new Tile("wallD",338,184),
-new Tile("wallD",218,268),
-new Tile("wallD",214,293),
-new Tile("wallD",388,174),
-new Tile("wallD",413,169),
-new Tile("wallD",420,148),
-new Tile("wallD",450,177),
-new Tile("wallD",492,137),
-new Tile("wallD",457,141),
-new Tile("wallD",387,139),
-new Tile("wallD",343,148),
-new Tile("wallD",494,219),
-new Tile("wallD",452,256),
-new Tile("wallD",354,297),
-new Tile("wallD",50,293),
-new Tile("wallD",102,288),
-new Tile("wallD",131,298),
-
-};
+    Tile[][]mapArray={level0Map,level1Map,level1Map,level1Map,level1Map,level1Map,level1Map,level1Map};
+    
+    Enemy[]level0Army={};
+    Enemy[]level1Army={new Goblin()};
+    Enemy[]level2Army={new Goblin(),new Goblin(),new Goblin()};
+    Enemy[]level3Army={new Goblin(), new Goblin(), new Goblin(),new Goblin(), new Goblin(), new Goblin()};
+    Enemy[]level4Army={new GoblinKing()};
+    Enemy[][]armyArray={level0Army,level1Army,level2Army,level3Army,level4Army};
+   
+    
+    
     public MyWorld()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-        super(worldHeight, worldWidth, 1); 
+        super(worldHeight, worldWidth, 1, false); 
+        doorsRemoved=false;
+        tileName="wallCornerUL";
         
+        volume=10;
         Hero hero = new Hero();
-        addObject(hero,500,200);
+        addObject(hero,400,200);
         
-        addObject(new Axe(),100,200);
-        addObject(new AxeHitbox(),100,200);
+        addObject(new AxeHitbox(),60,200);
+        addObject(new Axe(),70,200);
+        /**
+        spawnRandomInArea(new Skeleton(),300,50,550,350);
+        spawnRandomInArea(new Skeleton(),300,50,550,350);
+        spawnRandomInArea(new Skeleton(),300,50,550,350);
+        spawnRandomInArea(new Skeleton(),300,50,550,350);
+        spawnRandomInArea(new Skeleton(),300,50,550,350);
+        spawnRandomInArea(new Skeleton(),300,50,550,350);
+        spawnRandomInArea(new Skeleton(),300,50,550,350);
+        */
         
-        //spawnGoblinGang(100,100);
-
+       /**
+        spawnRandomInArea(new GoblinKing(),300,50,550,350);
+              addObject(new Minion(50,0),0,0);
+            addObject(new Minion(-50,0),0,0);
+            addObject(new Minion(0,50),0,0);
+            addObject(new Minion(0,-50),0,0);
+        */
         
         
         
+        musicTimer.mark();
         
-        spawnMap(borderMap);
         addObject(new CoinUI(),580,30);
         
         addObject(coinsLabel, 550,30);
         coinsLabel.setFillColor(coinsColor);
         updateHealth();
-        //spawnMap(level1Map);
-    }
-    public int getRandomNum(int x, int y){
-        return Greenfoot.getRandomNumber(y-x)+x;
+        spawnArmy(level);
+        spawnMap(level);
+        //armyArray[level].set(1, new Nothing());
     }
     public void act(){
         
+        if(musicTimer.millisElapsed()>16000){
+            musicMain.play();
+        }
+        else{
+            music.play();
+        }
+        music.setVolume(volume);
+        musicMain.setVolume(volume);
         //Whenever the mouse button is clicked, a tile with the name of tileName is spawned on the location of the mouse
-        String tileName="wallR";
+        if ( Greenfoot.isKeyDown ("=")&volume<100 ){
+            
+            volume++;
+            
+        }
+        if ( Greenfoot.isKeyDown ("-")&volume>0 ) {
+            volume--;
+        } 
+        
         if(Greenfoot.mouseClicked(null)){
             MouseInfo mouse = Greenfoot.getMouseInfo();
             addObject(new Tile(tileName,mouse.getX(),mouse.getY()),mouse.getX(),mouse.getY());
@@ -146,10 +175,69 @@ new Tile("wallD",131,298),
         if(health==0){
             removeObjects(getObjects(Enemy.class));
         }
+        if(level>0&getObjects(Enemy.class).size()<=0){
+            System.out.println(getObjects(Enemy.class).size()); 
+            doorsRemoved=true;
+        }
+        else if(level>0){
+            doorsRemoved=false;
+        }
+        //if(level==0&getObjects(Demon.class).size()==0){
+         //   addObject(new Demon(),260,190);
+        //}
+        
+        
     }
-    
+    public void setDoors(boolean bool){
+        doorsRemoved=bool;
+    }
+    public static boolean doorsRemoved(){
+       return doorsRemoved;
+    }
+    public void levelUp(){
+        level++;
+        
+        spawnArmy(level);
+        spawnMap(level);
+    }
+    public void levelDown(){
+        
+        level--;
+        spawnArmy(level);
+        spawnMap(level);
+    }
+    public void spawnArmy(int level){
+        
+        
+        removeObjects(getObjects(Enemy.class));
+        for(int i = 0 ; i < armyArray[level].length ; i++){
+            
+            spawnRandomInArea(armyArray[level][i],100,50,550,350);
+            System.out.println(armyArray[level][i]);
+            armyArray[level][i].setEnemyNumber(i);
+        }
+    }
+    public void spawnMap(int level){
+        //Loops through the entire map array, adding every tileObject[i]
+        removeObjects(getObjects(Tile.class));
+        for(int i = 0 ; i < mapArray[level].length ; i++){
+            
+            addObject(mapArray[level][i],0,0);
+        }
+    }
+    public int getRandomNum(int x, int y){
+        return Greenfoot.getRandomNumber(y-x)+x;
+    }
+    public void spawnRandomInArea(Enemy c, int x1, int y1, int x2, int y2){
+        addObject(c,getRandomNum(x1,x2),getRandomNum(y1,y2));
+    }    
     public void increaseCoins(){
         coins++;
+        coinsLabel.setValue(coins);
+
+    }
+    public void decreaseCoins(int amount){
+        coins-=amount;
         coinsLabel.setValue(coins);
 
     }
@@ -159,6 +247,7 @@ new Tile("wallD",131,298),
     }   
     public void decreaseHealth(){
         health--;
+        new GreenfootSound("sounds/Hit_/PlayerHurt_0.mp3").play();
         updateHealth();
     }
     public void updateHealth(){
@@ -192,12 +281,7 @@ new Tile("wallD",131,298),
             addObject(e[i],0,0);
         }
     }
-    public void spawnMap(Tile[] map){
-        //Loops through the entire map array, adding every tileObject[i]
-        for(int i = 0 ; i < map.length ; i++){
-            addObject(map[i],0,0);
-        }
-    }
+    
     public void spawnSkeleton(int x, int y)
     {
         //Spawns a skeleton at x y

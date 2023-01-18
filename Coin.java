@@ -53,6 +53,7 @@ public class Coin extends Entity
         if(getX()==580&getY()==30){
             
             MyWorld world = (MyWorld) getWorld();
+            new GreenfootSound("sounds/Coin_/Coin_"+Greenfoot.getRandomNumber(2)+".mp3").play();
             world.increaseCoins();
             world.removeObject(this);
             

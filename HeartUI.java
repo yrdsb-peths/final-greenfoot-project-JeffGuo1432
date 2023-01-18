@@ -6,7 +6,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class HeartUI extends Entity
+public class HeartUI extends UI
 {
     /**
      * Act - do whatever the HeartUI wants to do. This method is called whenever
@@ -14,7 +14,7 @@ public class HeartUI extends Entity
      */
     SimpleTimer bobTimer = new SimpleTimer();
     int count = 0;
-    
+    int initialDelay=100;
     public void bob(int bobDelay)
     {
         if(bobTimer.millisElapsed() < bobDelay)
@@ -33,10 +33,11 @@ public class HeartUI extends Entity
     public HeartUI(String image){
         setImage(new GreenfootImage(image));
         getImage().scale(40,40);
+        bob(initialDelay);
     }
     public void act()
     {
-        
-        bob(500);
+        bringToTop();
+        bob(230);
     }
 }

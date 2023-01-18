@@ -14,10 +14,10 @@ public class Tile extends Obstacle
      */
     
     
-    String tileName="";
-    int x;
-    int y;
-    int tileSize=40;
+    public String tileName="";
+    public int x;
+    public int y;
+    public int tileSize=40;
     public Tile(String tileName,int x, int y){
         this.tileName=tileName;
         GreenfootImage image= new GreenfootImage("images/Tiles_/"+tileName+".png");
@@ -34,12 +34,20 @@ public class Tile extends Obstacle
         setLocation(x+tileSize/2-(x%tileSize),y+tileSize/2-(y%tileSize));
         setLayers();  
         
-        if(getTileDirection().equals("U")){
+        if(getTileDirection().indexOf("U")!=-1){
             
             //This code puts the tile in the top layer, since I always want tiles facing up to be in the foreground
             int x = getX(), y = getY();
             world.removeObject(this);
             world.addObject(this, x, y);    
+        }
+        
+        if(getTileType().equals("door")){
+            
+            if(world.doorsRemoved()){
+                System.out.println("yup");
+                world.removeObject(this);
+            }
         }
     }
     //returns the tiles direction as a string
@@ -48,6 +56,18 @@ public class Tile extends Obstacle
         String ans="";
         for(int i=this.tileName.length()-1 ; true ;i--){
             if(Character.isUpperCase(this.tileName.charAt(i))){
+                ans+=this.tileName.charAt(i);
+            }
+            else{
+                return ans;
+            }
+        }
+    }
+    public String getTileType()
+    {
+        String ans="";
+        for(int i=0 ; true ;i++){
+            if(Character.isLowerCase(this.tileName.charAt(i))){
                 ans+=this.tileName.charAt(i);
             }
             else{

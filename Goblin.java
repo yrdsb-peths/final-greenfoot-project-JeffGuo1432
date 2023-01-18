@@ -53,11 +53,16 @@ public class Goblin extends Enemy
     int health=2;
     int chargeAngle;
     int randomDirection;
+    boolean canDropCoin=true;
     public Goblin(){
         animate(0);
+        MyWorld world = (MyWorld) getWorld();
+
+        
         moveState="walking";
         health=2;
         randomDirection=(Greenfoot.getRandomNumber(2)*2)-1;
+        
     }
     public void animate(int animationDelay)
     {
@@ -67,7 +72,7 @@ public class Goblin extends Enemy
         }
         animationTimer.mark();
         imageIndex = (imageIndex + 1 )% idle.length;
-        GreenfootImage currentImage = new GreenfootImage("images/goblin_/"+action+"/"+xDirectionChar+action+imageIndex+".png");
+        GreenfootImage currentImage = new GreenfootImage("images/orc_/"+action+"/"+xDirectionChar+action+imageIndex+".png");
         currentImage.scale(72,72);
         setImage(currentImage);
     }
@@ -196,9 +201,9 @@ public class Goblin extends Enemy
             animationDelay=200;
             moveState="dead";
             if(moveStateTimer.millisElapsed()>animationDelay*4){
-                world.spawnCoin(getX(),getY());
+                if(canDropCoin){world.spawnCoin(getX(),getY());}
                 world.removeObject(this);
-                
+                canDropCoin=false;
             }
         }
         
@@ -213,6 +218,7 @@ public class Goblin extends Enemy
             imageIndex=1;
                 action="Hurt_";
                 animate(0);
+                new GreenfootSound("sounds/Hit_/EnemyHurt_"+Greenfoot.getRandomNumber(1)+".mp3").play();
             damageCooldownTimer.mark();
         }
     }
@@ -253,12 +259,7 @@ public class Goblin extends Enemy
     public void knockback(int strength){
         knockbackStrength=strength;
     }
-    public static int getXPos(){
-        return x;
-    }
-    public static int getYPos(){
-        return y;
-    }
+    
     public boolean canKill(){
         if(moveState!="hurt"&moveState!="dead"){
             return true;

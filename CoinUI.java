@@ -6,7 +6,8 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class CoinUI extends Entity
+public class CoinUI extends UI
+
 {
     /**
      * Act - do whatever the CoinUI wants to do. This method is called whenever
@@ -56,6 +57,7 @@ public class CoinUI extends Entity
     }
     public void act()
     {
+        bringToTop();
         animate(150,size);
         if(isTouching(Coin.class)){
             animate(-1,40);

@@ -44,11 +44,12 @@ public class Axe extends Entity
     new GreenfootImage("images/axeSwing_/swing_1.png"),
     new GreenfootImage("images/axeSwing_/swing_2.png"),
     new GreenfootImage("images/axeSwing_/swing_3.png")};
-
+     
     int attackCooldown = 0;
     boolean attack = false;
     int weaponDirection = 0;
     int attackingWeaponDirection = 1;
+    int stuckLevel=0;
     public Axe()
     {
         //Initalizes the images
@@ -77,9 +78,16 @@ public class Axe extends Entity
         
         MyWorld world = (MyWorld) getWorld();
         int x = getX(), y = getY();
+        
         world.removeObject(this);
         world.addObject(this, x, y); 
         attackCooldown-=1;
+        if(AxeHitbox.isStuck()){
+            if(stuckLevel!=world.level){
+                
+            }
+            
+        }
         if(AxeHitbox.isThrown()){
             if(AxeHitbox.getWeaponDirection()==1){
                         setImage(imageRight);
@@ -140,5 +148,9 @@ public class Axe extends Entity
                 }
             }
         }
+        if(AxeHitbox.isStuck()){
+            stuckLevel=world.level;
+        }
     }
+    
 }

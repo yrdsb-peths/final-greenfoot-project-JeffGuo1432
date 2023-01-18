@@ -23,11 +23,12 @@ public class AxeHitbox extends Entity
     GreenfootImage swingingImageLeft = new GreenfootImage("images/swingAxe_.png");
     
     int count;
-    public static int weaponDirection=1;
+    public static int weaponDirection=-1;
     int weaponDirectionY=1;
-    public static boolean thrown=false;
+    public static boolean thrown=true;
     public static boolean attack=false;
-    public static boolean stuck=false;
+    public static boolean stuck=true;
+    int stuckLevel = 0;
     boolean catchable=false;
     SimpleTimer attackTimer = new SimpleTimer();
     int thrownDirection;
@@ -41,8 +42,9 @@ public class AxeHitbox extends Entity
     SimpleTimer thrownTimer = new SimpleTimer();
     public AxeHitbox()
     {
-        thrown=false;           
-        stuck=false;
+        thrown=true;           
+        stuck=true;
+        weaponDirection=-1;
         setImage(hitbox);   
         //swingingImageRight.scale(40,40);
         
@@ -85,12 +87,12 @@ public class AxeHitbox extends Entity
                 }
             }
             
-            if((isAtEdge()||isTouching(Obstacle.class))){
+            if((isTouching(Obstacle.class))){
                 if(stuck==false){
                     axeStuck.play();
                 }
                 stuck=true;
-                
+                stuckLevel=world.level;
                 if(getX()>Hero.getXPos()){
                     setRotation(20);
                 }
@@ -108,7 +110,8 @@ public class AxeHitbox extends Entity
                 
             }
             else{
-                if(isAtEdge()==false&isTouching(Obstacle.class)==false){
+                if(isTouching(Obstacle.class)==false){
+                   
                    if(Greenfoot.isKeyDown("right")||weaponDirection==1){
                         weaponDirection=1;
                         weaponDirectionY=0;
@@ -117,13 +120,15 @@ public class AxeHitbox extends Entity
                         weaponDirection=-1;
                         weaponDirectionY=0;
                     } 
-                   if(Greenfoot.isKeyDown("up")){
-                        weaponDirectionY=-1;
-                        weaponDirection=0;
-                    }
-                   if(Greenfoot.isKeyDown("down")){
-                        weaponDirectionY=1;
-                        weaponDirection=0;
+                   if(isAtEdge()==false){
+                       if(Greenfoot.isKeyDown("up")){
+                            weaponDirectionY=-1;
+                            weaponDirection=0;
+                        }
+                       if(Greenfoot.isKeyDown("down")){
+                            weaponDirectionY=1;
+                            weaponDirection=0;
+                        }
                     }
                    if(weaponDirection!=0){
                        setRotation(getRotation()+20*(weaponDirection)); 

@@ -11,7 +11,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author Amjad Altadmri 
  * @version 1.1
  */
-public class Label extends Actor
+public class Label extends UI
 {
     private String value;
     private int fontSize;
@@ -24,6 +24,9 @@ public class Label extends Actor
     /**
      * Create a new label, initialise it with the int value to be shown and the font size 
      */
+    public void act(){
+        bringToTop();
+    }
     public Label(int value, int fontSize)
     {
         this(Integer.toString(value), fontSize);
@@ -60,7 +63,10 @@ public class Label extends Actor
         this.value = Integer.toString(value);
         updateImage();
     }
-    
+    public String getValue()
+    {
+        return value;
+    }
     /**
      * Sets the line color of the text
      * 
