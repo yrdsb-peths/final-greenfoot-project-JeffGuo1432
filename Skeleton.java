@@ -204,7 +204,7 @@ public class Skeleton extends Enemy
             move(knockbackStrength);
             smartMove(knockbackStrength);
             
-            System.out.println(knockbackStrength);
+            
 
             knockbackStrength-=1;
             setRotation(0);
@@ -236,8 +236,9 @@ public class Skeleton extends Enemy
         
                 if(canDropCoins){
                     dropLoot(1);
-                    world.removeObject(this);
+                    
                 }
+                world.removeObject(this);
                 canDropCoins=false;
             }
         }
@@ -314,7 +315,7 @@ public class Skeleton extends Enemy
             }
             else{
                 moveState="dead";
-                System.out.println("yes");
+                
             }
         }
         if(270<getRotation()&getRotation()<=360){

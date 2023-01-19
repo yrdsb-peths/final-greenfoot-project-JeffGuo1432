@@ -42,8 +42,8 @@ public class AxeHitbox extends Entity
     SimpleTimer thrownTimer = new SimpleTimer();
     public AxeHitbox()
     {
-        thrown=true;           
-        stuck=true;
+        thrown=false;           
+        stuck=false;
         weaponDirection=-1;
         setImage(hitbox);   
         //swingingImageRight.scale(40,40);

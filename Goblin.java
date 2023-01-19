@@ -201,7 +201,9 @@ public class Goblin extends Enemy
             animationDelay=200;
             moveState="dead";
             if(moveStateTimer.millisElapsed()>animationDelay*4){
-                if(canDropCoin){world.spawnCoin(getX(),getY());}
+                if(canDropCoin){
+                    world.spawnCoin(getX(),getY());
+                }
                 world.removeObject(this);
                 canDropCoin=false;
             }
