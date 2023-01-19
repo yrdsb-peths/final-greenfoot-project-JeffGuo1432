@@ -35,6 +35,7 @@ public class AxeHitbox extends Entity
     int speed = 5;
     int attackCooldown=0;
     int attackTicks = 0;
+    int rotationOffset;
     public static int attackingWeaponDirection=0;
     public static int x;
     public static int y;
@@ -163,7 +164,13 @@ public class AxeHitbox extends Entity
                 attackCooldown=50;
                 attack=true;
                 attackingWeaponDirection=weaponDirection;
-
+                rotationOffset=0;
+                if(Greenfoot.isKeyDown("up")&Greenfoot.isKeyDown("down")==false){
+                    rotationOffset=-45*attackingWeaponDirection;
+                }
+                if(Greenfoot.isKeyDown("down")&Greenfoot.isKeyDown("up")==false){
+                    rotationOffset=45*attackingWeaponDirection;
+                }
                 //System.out.println("        pqwieufgpupiqwucbpiuqwbec              ");
             }
             if(attack==true){
@@ -186,7 +193,7 @@ public class AxeHitbox extends Entity
                 if(attackTimer.millisElapsed()<200){
                     setLocation(Hero.getXPos()-20*attackingWeaponDirection,Hero.getYPos()+30);
     
-                    setRotation(((attackTimer.millisElapsed()*3/10)-50)*attackingWeaponDirection);
+                    setRotation(((attackTimer.millisElapsed()*3/10)-50)*attackingWeaponDirection+rotationOffset);
                     int moveDistance= (int)Math.round(0.001*(Math.pow((attackTimer.millisElapsed()-100),2))+95);
                     
                     move(moveDistance*attackingWeaponDirection-attackTimer.millisElapsed()/8*attackingWeaponDirection);

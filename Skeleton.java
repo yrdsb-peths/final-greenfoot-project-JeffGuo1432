@@ -69,10 +69,11 @@ public class Skeleton extends Enemy
         if(Greenfoot.getRandomNumber(8)==0){
             personality="smart";
         }
-        personality="smart";
+        
         if(moveState=="dead"){
             world.removeObject(this);
         }
+        personality="erratic";
     }
     
     public void ai(){

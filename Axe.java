@@ -50,6 +50,7 @@ public class Axe extends Entity
     int weaponDirection = 0;
     int attackingWeaponDirection = 1;
     int stuckLevel=0;
+    int rotationOffset=0;
     public Axe()
     {
         //Initalizes the images
@@ -82,12 +83,7 @@ public class Axe extends Entity
         world.removeObject(this);
         world.addObject(this, x, y); 
         attackCooldown-=1;
-        if(AxeHitbox.isStuck()){
-            if(stuckLevel!=world.level){
-                
-            }
-            
-        }
+    
         if(AxeHitbox.isThrown()){
             if(AxeHitbox.getWeaponDirection()==1){
                         setImage(imageRight);
@@ -104,6 +100,15 @@ public class Axe extends Entity
                 attackCooldown=50;
                 attack=true;
                 attackingWeaponDirection=AxeHitbox.getWeaponDirection();
+                rotationOffset=0;
+                if(Greenfoot.isKeyDown("up")&Greenfoot.isKeyDown("down")==false){
+                    rotationOffset=-45*attackingWeaponDirection;
+                }
+                if(Greenfoot.isKeyDown("down")&Greenfoot.isKeyDown("up")==false){
+                    rotationOffset=45*attackingWeaponDirection;
+                }
+                
+                
                 if(attackingWeaponDirection>0){
                     swingAnimation=swingAnimationRight;
                 }
@@ -128,7 +133,7 @@ public class Axe extends Entity
                 
                 if(attackTimer.millisElapsed()<300){
                     setLocation(Hero.getXPos(),Hero.getYPos());
-                    setRotation(((attackTimer.millisElapsed()/2)-100)*attackingWeaponDirection);
+                    setRotation(((attackTimer.millisElapsed()/2)-100)*attackingWeaponDirection+rotationOffset);
                     move(80*attackingWeaponDirection);
                     setRotation(getRotation()+120*attackingWeaponDirection);
                 }
