@@ -17,11 +17,11 @@ public class GoblinKing extends Skeleton
     boolean minionsDead=true;
     
     public GoblinKing(){
-        xSpeed=1;
+        xSpeed=2;
         size = 100;
         health=10;
         enemy="goblinKing_";
-        
+        personality="robotic";
     }
     
     public void act()
