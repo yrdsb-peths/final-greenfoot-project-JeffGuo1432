@@ -8,6 +8,7 @@ comment2.params=
 comment2.target=void\ setLayers()
 comment3.params=
 comment3.target=boolean\ canMoveLeft()
+comment3.text=\r\n\ Tells\ you\ if\ you\ can\ move\ left,\ if\ you\ can\ move\ right,\ if\ you\ can\ move\ up\ or\ down\r\n\ I\ don't\ want\ things\ walking\ through\ walls\r\n
 comment4.params=
 comment4.target=boolean\ canMoveRight()
 comment5.params=

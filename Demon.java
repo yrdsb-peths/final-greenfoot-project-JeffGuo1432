@@ -9,8 +9,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Demon extends Enemy
 {
     /**
-     * Act - do whatever the Demon wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * This is a work in progress
      */
     String text= "";
     String[]textArray={"Hey go pick up that axe [space to continue]","Press space to attack","Press q to throw your axe","Use arrow keys after you press q"};

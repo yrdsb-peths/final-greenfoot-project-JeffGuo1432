@@ -23,9 +23,8 @@ public class Axe extends Entity
      * 
      * 
      * The Axe Object is simply an image placed ontop of the AxeHitbox.
-     * This is because the Axe itself is a long and rectangular that 
-     * I found was often times too frustrating to control.
      */
+    
     
     GreenfootImage imageRight = new GreenfootImage("images/axe_.png");
     GreenfootImage imageLeft = new GreenfootImage("images/axe_.png");
@@ -34,7 +33,7 @@ public class Axe extends Entity
     
     GreenfootImage attackImageRight = new GreenfootImage("images/swingingAxe_.png");
     GreenfootImage attackImageLeft = new GreenfootImage("images/swingingAxe_.png");
-    SimpleTimer attackTimer = new SimpleTimer();
+    
     GreenfootImage[] swingAnimationRight={new GreenfootImage("images/axeSwing_/swing_0.png"),
     new GreenfootImage("images/axeSwing_/swing_1.png"),
     new GreenfootImage("images/axeSwing_/swing_2.png"),
@@ -45,11 +44,11 @@ public class Axe extends Entity
     new GreenfootImage("images/axeSwing_/swing_2.png"),
     new GreenfootImage("images/axeSwing_/swing_3.png")};
      
+    SimpleTimer attackTimer = new SimpleTimer();
     int attackCooldown = 0;
     boolean attack = false;
     int weaponDirection = 0;
     int attackingWeaponDirection = 1;
-    int stuckLevel=0;
     int rotationOffset=0;
     public Axe()
     {
@@ -95,6 +94,8 @@ public class Axe extends Entity
                 }
         }
         if(AxeHitbox.isThrown()==false){
+            
+            //A similar version of this code can be found in the AxeHitbox class
             if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
                 attackTimer.mark();
                 attackCooldown=50;
@@ -117,7 +118,11 @@ public class Axe extends Entity
                     
                 }
             }
+            
+            //The following code is the code used to sell the attack animation
+            //An explanation of this code can be found in the AxeHitbox class, since they are rather similar
             if(attack==true){
+                //This cycles through the SwingAnimation array, 
                 if(attackTimer.millisElapsed()<40){
                     setImage(swingAnimation[0]);
                 }
@@ -142,20 +147,18 @@ public class Axe extends Entity
                     setRotation(0);
                 }
             }
+            
+            //This code is used when the axe is in the player's hands
             if(attack==false){
                 if(AxeHitbox.getWeaponDirection()==1){
                         setImage(imageRight);
-                        //System.out.println("r");
                 }
                 else{
                         setImage(imageLeft);
-                        //System.out.println("l");
                 }
             }
         }
-        if(AxeHitbox.isStuck()){
-            stuckLevel=world.level;
-        }
+        
     }
     
 }

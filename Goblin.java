@@ -9,8 +9,10 @@ import java.util.List;
 public class Goblin extends Enemy
 {
     /**
-     * Act - do whatever the Skeleton wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * The Goblin is an enemy, that performs a charged attack.
+     * When the player enters its range, it waits a few seconds,
+     * then charges towards the player quickly. Additionally it has
+     * 2 health. 
      */
     int count=0;
     //variables used in animation

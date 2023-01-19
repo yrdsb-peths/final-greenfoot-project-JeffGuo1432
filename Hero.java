@@ -60,33 +60,39 @@ public class Hero extends Entity
         
         if(world.health>0){
             
-            
+            //If there is a wall to the left, you cannot move left
             if(xDirection<0&canMoveLeft()==false){
                 xDirection=0;
             }
+            //If there is a wall to the right, you cannot move right
             if(xDirection>0&canMoveRight()==false){
                 xDirection=0;
             }
+            //If there is a wall above, you cannot move up
             if(yDirection<0&canMoveUp()==false){
                 yDirection=0;
             }
+            //If there is a wall below, you cannot move down
             if(yDirection>0&canMoveDown()==false){
                 yDirection=0;
             }
             
             setLocation(getX()+xVelocity,getY()+yVelocity);
             xVelocity=xDirection*xSpeed;
+            yVelocity=yDirection*ySpeed;
+            
             if((xVelocity==0)&(yVelocity==0)){
+                //If the player stands still the Idle_ animation plays
                 action="Idle_";
                 animationDelay=160;
             }
             else{
+                //If the player is walking the WalkRun_ animation plays
                 action="WalkRun_";
                 animationDelay=100;
             }
-            //this slows the player down when they are carrying an axe, because it is heavy
             
-            
+            //Basic movement
             if(Greenfoot.isKeyDown("right")){
                 xDirection=1;
                 xDirectionChar='r';
@@ -95,28 +101,30 @@ public class Hero extends Entity
                 xDirection=-1;
                 xDirectionChar='l';
             }
-            
+            //If both left and right are pressed the player does not move horizontally
             if(Greenfoot.isKeyDown("right")==false&(Greenfoot.isKeyDown("left")==false)){
                 xDirection=0;
             }
         
-            yVelocity=yDirection*ySpeed;
-            
+            //Basic movement
             if(Greenfoot.isKeyDown("down")){
                 yDirection=1;
             }
             if(Greenfoot.isKeyDown("up")){
                 yDirection=-1;
             }
+            //If both up and down are pressed the player does not move vertically
             if(Greenfoot.isKeyDown("down")==false&(Greenfoot.isKeyDown("up")==false)){
                 yDirection=0;
             }
+            
             
             if(isTouchingSkeleton()||isTouchingGoblin()){
                 action="Hurt_";         
                 animationDelay=125;
                 
             }
+            //The following code executes when the player is Hurt and able to take damage
             if(action=="Hurt_"&damageCooldownTimer.millisElapsed()>500){
                 imageIndex=1;
                 animate(0);
@@ -140,15 +148,8 @@ public class Hero extends Entity
             }
         }
         /**
-         * 
-         * //the code below was meant to slow down the player when they were moving diagonally, using pythagorean theorem
-        if((xVelocity!=0)&(yVelocity!=0)){
-            double xVelocityD = xVelocity;
-            xVelocity=(int) Math.round(xVelocityD/1.41);
-            double yVelocityD = yVelocity;
-            yVelocity=(int) Math.round(yVelocityD/1.41);
-        }
-        **/
+         * These two if statements change the levels
+         */
         if(getX()>610){
             setLocation(-10,getY());
             world.levelUp();

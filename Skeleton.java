@@ -9,8 +9,9 @@ import java.util.List;
 public class Skeleton extends Enemy
 {
     /**
-     * Act - do whatever the Skeleton wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * The Skeleton is one of the weakest enemies,
+     * it walks towards the player horizontally and vertically, based on its personality
+     * it has one health.
      */
     int count=0;
     //variables used in animation
@@ -73,29 +74,23 @@ public class Skeleton extends Enemy
         if(moveState=="dead"){
             world.removeObject(this);
         }
-        personality="erratic";
     }
-    
+    public void act()
+    {
+        // The AI function is called in other classes such as the GoblinKing class
+        ai();
+        
+        
+    }
+    /**
+     * The AI class, does a lot of things
+     * It moves the skeleton, it makes the skeletons decisions
+     * it deals with animation, it makes sure the skeleton can get hurt
+     * it makes sure the skeleton can die, as well as take knockback.
+     */
     public void ai(){
         MyWorld world = (MyWorld) getWorld();
-        /**
-        if(xDirection<0&canMoveLeft()==false){
-            xDirection=0;
-        }
-        if(xDirection>0&canMoveRight()==false){
-            xDirection=0;
-        }
-        if(yDirection<0&canMoveUp()==false){
-            yDirection=0;
-        }
-        if(yDirection>0&canMoveDown()==false){
-            yDirection=0;
-        }
-        **/
-        //System.out.println(getX());
-        //setLocation(getX()+xVelocity,getY()+yVelocity);
-        //xVelocity=xDirection*xSpeed;
-        //yVelocity=yDirection*ySpeed;
+        
         if(moveState!="hurt"&moveState!="dead"){
             animationDelay=200;
             //a skeleton with the personality "smart" will try to dodge the players axes
@@ -112,7 +107,6 @@ public class Skeleton extends Enemy
                 if(deltaX<0){
                     if(canMoveRight()){
                         setLocation(getX()+xSpeed,getY());
-                        //xSpeed;
                         xDirection=1;
                         xDirectionChar='r';
                     }
@@ -120,7 +114,6 @@ public class Skeleton extends Enemy
                 if(deltaX>0){
                     if(canMoveLeft()){
                         setLocation(getX()-xSpeed,getY());
-                        //xSpeed;
                         xDirection=(-1);
                         xDirectionChar='l';
                     }
@@ -129,7 +122,8 @@ public class Skeleton extends Enemy
                     moveState="routing";
                 }
             }
-            //i called moving in the y direction routing, they always move towards the players y location while routing
+            
+            //I called moving in the y direction routing, they always move towards the players y location while routing
             if(moveState=="routing"){
 
                 deltaY = getY() - Hero.getYPos();
@@ -154,7 +148,8 @@ public class Skeleton extends Enemy
                     moveState="attacking";
                 }
             }
-                //i added a waiting period to make the skeletons easier to handle, and to give the player some breathing room
+            
+                //I added a waiting period to make the skeletons easier to handle, and to give the player some breathing room
             if(moveStateTimer.millisElapsed()>changeStateMillis&(moveState=="attacking"||moveState=="routing")){
                 
                 previousMoveState=moveState;
@@ -188,7 +183,8 @@ public class Skeleton extends Enemy
                 moveStateTimer.mark();
                 changeStateMillis=1000;
             }
-            //moveState="waiting";
+    
+            //This code allows the Skeleton to takeDamage when its hit by a flying or swinging axe
             if(isTouching(AxeHitbox.class)&((AxeHitbox.isThrown()&AxeHitbox.isStuck()==false)||AxeHitbox.isAttacking())){
                 takeDamage();
                 moveStateTimer.mark();
@@ -199,20 +195,24 @@ public class Skeleton extends Enemy
             }
             
         }
+        
         if(knockbackStrength>0){
+            //These lines of code allows the Skeleton to turn away from the player and move a set knockBackStrength away
+            
             turnTowards(Hero.getXPos(),Hero.getYPos());
             turn(180);
             move(knockbackStrength);
             smartMove(knockbackStrength);
             
-            
-
+            //KnockbackStrength diminishes gradually
             knockbackStrength-=1;
+            
+            //Resets the rotation
             setRotation(0);
             
             }
-            //System.out.println(moveState);
-        //here is the animation for the hurt and death, I wanted the hurt animation to be faster therefore the delay is only 70
+       
+        //Here is the animation for the hurt and death, I wanted the hurt animation to be faster therefore the delay is only 70
         if(moveState=="hurt"){
             if(action!="Hurt_"){
                 imageIndex=1;
@@ -226,6 +226,7 @@ public class Skeleton extends Enemy
             }
         }
         
+        //The following code executes when the skeleton dies
         if(health<=0||moveState=="dead"){
             xVelocity=0;
             yVelocity=0;
@@ -246,6 +247,10 @@ public class Skeleton extends Enemy
         
         animate(animationDelay);
     }
+    /**
+     * This code is meant to nicely drop multiple coins on the ground in a line, when something dies
+     * but I only ever drop one coin at a time, so it's kind of useless
+     */
     public void dropLoot(int coins)
     {
         MyWorld world = (MyWorld) getWorld();
@@ -254,6 +259,7 @@ public class Skeleton extends Enemy
         }
         world.removeObject(this);
     }
+    //Animation
     public void animate(int animationDelay)
     {
         if(animationTimer.millisElapsed() < animationDelay)
@@ -267,18 +273,7 @@ public class Skeleton extends Enemy
         setImage(currentImage);
     }
     
-    public void act()
-    {
-        // Add your action code here.
-        count++;
-        if(count%100==0){
-            //System.out.println(moveState);
-        }
-        //
-        ai();
-        
-        
-    }
+    
     public void takeDamage(){
         if(damageCooldownTimer.millisElapsed()>1000){
         
@@ -293,6 +288,12 @@ public class Skeleton extends Enemy
 
         }
     }
+    
+    /**
+     * The method smartMove uses the canMove(Up/Down/Left/Right) methods
+     * The idea is to prevent skeletons walking inside of walls
+     * To eliminate the hassle I just made it so that, they die when they touch the wall
+     */
     public void smartMove(int distance){
         if(0<getRotation()&getRotation()<=90){
             if(canMoveDown()&canMoveRight()){
@@ -328,10 +329,16 @@ public class Skeleton extends Enemy
             }
         }
     }
-    
+    /**
+     * Allows other classes to give the skeleton knockback
+     */
     public void knockback(int strength){
         knockbackStrength=strength;
     }
+    /**
+     * This getter methods tells the player that the skeleton is dangerous,
+     * I do not want the player to take damage from a dying skeleton
+     */
     public boolean canKill(){
         if(moveState!="hurt"&moveState!="dead"){
             return true;
@@ -345,75 +352,5 @@ public class Skeleton extends Enemy
         xOffset=0;
         yOffset=0;
     }
-    /**
-   public boolean canMoveLeft()
-    {
-        for(Class c: new Class[]{Tile.class})
-        {
-            
-            List<Tile> bs = getIntersectingObjects(c);
-            
-            for(Tile b: bs)
-            {
-                if(b.getX() < this.getX()&b.getTileDirection().indexOf("R")!=-1){
-                    if(b.getX()>=this.getX()-33){
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-    public boolean canMoveRight()
-    {
-        for(Class c: new Class[]{Tile.class})
-        {
-            
-            List<Tile> bs = getIntersectingObjects(c);
-            for(Tile b: bs)
-            {
-                if(b.getX() > this.getX()&b.getTileDirection().indexOf("L")!=-1)
-                    if(b.getX()<=this.getX()+33){
-                        return false;
-                    }
-            }
-        }
-        return true;
-    }
-    public boolean canMoveUp()
-    {
-        MyWorld world = (MyWorld) getWorld();
-        for(Class c: new Class[]{Tile.class})
-        {
-            
-            List<Tile> bs = getIntersectingObjects(c);
-            
-            for(Tile b: bs)
-            {
-                
-                if(b.getY() < this.getY()&b.getTileDirection().indexOf("D")!=-1)
-                    if(b.getY()>=this.getY()-6){
-                        return false;
-                    }
-            }
-        }
-        return true;
-    }
-    public boolean canMoveDown()
-    {
-        for(Class c: new Class[]{Tile.class})
-        {
-            
-            List<Tile> bs = getIntersectingObjects(c);
-            
-            for(Tile b: bs)
-            {   
-                
-                if(b.getY() > this.getY()&b.getTileDirection().indexOf("U")!=-1)
-                    return false;
-            }
-        }
-        return true;
-    }
-    **/
+  
 }
