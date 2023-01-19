@@ -9,13 +9,16 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Enemy extends Entity
 {
     /**
-     * Act - do whatever the Enemy wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * The Enemy class consists of anything from Skeletons to Goblins, to Goblin Kings
+     * I put them all in a class so I can detect things like, whether or not the player has defeated 
+     * all enemies in a room, or whether or not the player is touching an enemy.
      */
+    
+    //These variables are all consistent throughout all enemies
     int knockbackStrength;
     public static int x;
     public static int y;
-    public static int enemyNumber;
+   
     GreenfootImage[] idle = new GreenfootImage[4];  
     SimpleTimer animationTimer = new SimpleTimer();
     String action="Idle_";
@@ -25,6 +28,7 @@ public class Enemy extends Entity
     public Enemy(){
         
     }
+    //Animation
     public void animate(int animationDelay,String enemy)
     {
         if(animationTimer.millisElapsed() < animationDelay)
@@ -37,11 +41,11 @@ public class Enemy extends Entity
         currentImage.scale(72,72);
         setImage(currentImage);
     }
-    public void setEnemyNumber(int enemyNumber){
-        this.enemyNumber=enemyNumber;
-    }
+    
+    
     public void act()
     {
+        //For the getter methods
         x=getX();
         y=getY();
     }

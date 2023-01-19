@@ -33,6 +33,10 @@ public class Entity extends Actor
             }
         }
     }
+    /**
+     * Tells you if you can move left, if you can move right, if you can move up or down
+     * I don't want things walking through walls
+     */
     public boolean canMoveLeft()
     {
         for(Class c: new Class[]{Tile.class})

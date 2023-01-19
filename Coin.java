@@ -21,9 +21,12 @@ public class Coin extends Entity
     int idleTime;
     public Coin(){
         timer.mark();
+        //randomises idleTime, so that coins do not wait for a constant amount of time, for variation
         idleTime=Greenfoot.getRandomNumber(2)*Greenfoot.getRandomNumber(12)*100+500;
         imageIndex=Greenfoot.getRandomNumber(3);
     }
+    
+    //Animation
     public void animate(int animationDelay)
     {
         
@@ -40,19 +43,27 @@ public class Coin extends Entity
     }
     public void act()
     {            
+        
         if(timer.millisElapsed()>idleTime){
+            //Turns towards the CoinUI in the top right corner of the screen.
             turnTowards(580,30);
+            
             move(speed);
             
         }
         if(isTouching(CoinUI.class)){
+            //If the coin is touching CoinUI.class the speed gradually reduces to 1, allowing it to line up perfectly with its x and y positions
+            
             if(speed>1){
                 speed--;
             }
         }
+        
         if(getX()==580&getY()==30){
             
             MyWorld world = (MyWorld) getWorld();
+            
+            //Plays a sound chosen randomly from three options
             new GreenfootSound("sounds/Coin_/Coin_"+Greenfoot.getRandomNumber(2)+".mp3").play();
             world.increaseCoins();
             world.removeObject(this);

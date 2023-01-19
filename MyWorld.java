@@ -31,6 +31,11 @@ public class MyWorld extends World
     Label title = new Label ("",80);
     Label description = new Label("",28);
             Label instructions2 = new Label("",30);
+            
+    /**
+     * These ginormous arrays are used in the levels, 
+     * they hold the information of every single tile of a particular level, its position, its name and direction
+     */
     Tile[] level1Map = {
     new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",26,253),
     new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),
@@ -71,38 +76,16 @@ new Tile("wallUL",450,180),};
     new Tile("wallU",218,384),new Tile("wallU",251,385),new Tile("wallU",299,381),new Tile("wallU",342,383),
     new Tile("wallU",384,383),new Tile("wallU",421,386),new Tile("wallU",461,388),new Tile("wallU",500,387),
     new Tile("wallU",536,386),new Tile("wallCornerUL",572,385),new Tile("wallUL",576,263),new Tile("wallD",577,132),
-    new Tile("wallR",16,147),new Tile("wallR",20,259),new Tile("wallR",18,176),new Tile("wallR",20,222),
-/**new Tile("wallR",221,34),
-new Tile("wallR",227,72),
-new Tile("wallR",223,103),
-/**new Tile("wallR",220,136),
-/**new Tile("wallR",220,179),
-/**new Tile("wallR",218,218),
-new Tile("wallR",220,256),
-new Tile("wallR",220,290),
-new Tile("wallR",218,338),
-new Tile("wallL",181,30),
-new Tile("wallL",180,51),
-new Tile("wallL",182,95),
-/**new Tile("wallL",184,134),
-new Tile("wallL",182,180),
-new Tile("wallL",179,213),
-new Tile("wallL",182,253),
-new Tile("wallL",182,287),
-new Tile("wallL",184,329),
-new Tile("wallD",167,132),
-new Tile("wallD",222,142),
-new Tile("wallUL",175,263),
-new Tile("wallUR",217,262),
-new Tile("wallCornerUR",227,375),
-new Tile("wallCornerUL",182,377),
-new Tile("door2LR",216,170),
-new Tile("door2LR",221,209),
-new Tile("door2LR",188,175),
-new Tile("door2LR",183,218),*/};
-
+    new Tile("wallR",16,147),new Tile("wallR",20,259),new Tile("wallR",18,176),new Tile("wallR",20,222),};
+    
+    /**
+     * This is an array of the arrays above, it is the sequence of which they will be spawned in
+     */
     Tile[][]mapArray={level0Map,level2Map,level1Map,level1Map,level1Map,level1Map,level1Map,level1Map,level1Map};
     
+    /**
+     * These arrays are the same idea as the map arrays, except they hold enemies instead
+     */
     Enemy[]level0Army={};
     Enemy[]level1Army={new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton()};
     Enemy[]level2Army={new Goblin(), new Goblin(), new Skeleton(), new Skeleton()};
@@ -137,25 +120,10 @@ new Tile("door2LR",183,218),*/};
         //armyArray[level].set(1, new Nothing());
     }
     public void act(){
-        if(level==2&getObjects(CoinUI.class).size()<1){
-            
-            updateHealth();
-            addObject(new CoinUI(),580,30);
-            addObject(coinsLabel, 550,30);
-        }
-        if(level==1&getObjects(Label.class).size()<5){
-            instructions1.setValue("Press space to melee attack");
-            instructions2.setValue("Press q and arrow keys to ranged attack");
-            
-            addObject(instructions1,300,150);
-            addObject(instructions2,300,250);
-        }
-        if(level!=1){
-            
-            
-            instructions1.setValue("");
-            instructions2.setValue("");
-        }if(level==0&getObjects(Label.class).size()<5){
+        /**
+         * Displays the Title and Description on level 0
+         */
+        if(level==0&getObjects(Label.class).size()<5){
             title.setValue("AXE GUY");
             description.setValue("Music by Brandon Dela Cruz [+] and [-] for volume");
             addObject(description,300,300);
@@ -168,31 +136,62 @@ new Tile("door2LR",183,218),*/};
             title.setValue("");
            
         }
+        /**
+         * Displays the Instructions on level 1
+         */
+        if(level==1&getObjects(Label.class).size()<5){
+            instructions1.setValue("Press space to melee attack");
+            instructions2.setValue("Press q and arrow keys to ranged attack");
+            
+            addObject(instructions1,300,150);
+            addObject(instructions2,300,250);
+        }
+        if(level!=1){
+            
+            
+            instructions1.setValue("");
+            instructions2.setValue("");
+        }
+        /**
+         * Displays the UI such as the Hearts and Coins on level 2
+         */
+        if(level==2&getObjects(CoinUI.class).size()<1){
+            
+            updateHealth();
+            addObject(new CoinUI(),580,30);
+            addObject(coinsLabel, 550,30);
+        }
         
+        /**
+         * Plays the music done by my friend Brandon Dela Cruz, who offered to make music for me.
+         * What a nice guy.
+         */
         if(musicTimer.millisElapsed()>16000){
+            //The main music is on a 16 second loop and repeats seemlessly
             musicMain.play();
+            
         }
         else{
             music.play();
         }
         music.setVolume(volume);
         musicMain.setVolume(volume);
-        //Whenever the mouse button is clicked, a tile with the name of tileName is spawned on the location of the mouse
+        
+        //Controls the volume when [-] or [+] are pressed 
         if ( Greenfoot.isKeyDown ("=")&volume<100 ){
-            
             volume++;
-            
         }
         if ( Greenfoot.isKeyDown ("-")&volume>0 ) {
             volume--;
         } 
         
+        //Whenever the mouse button is clicked, a tile with the name of tileName is spawned on the location of the mouse
         if(Greenfoot.mouseClicked(null)){
             MouseInfo mouse = Greenfoot.getMouseInfo();
             tileName="wallUR";
             addObject(new Tile(tileName,mouse.getX(),mouse.getY()),mouse.getX(),mouse.getY());
             //When a tile is created, the code prints out "newTile(tileName,x,y)" which I can then easily 
-            //copy and paste into the arrays above
+            //copy and paste into the mapArrays above
             System.out.println("new Tile(\""+tileName+"\","+mouse.getX()+","+mouse.getY()+"),");
         }
         if(Greenfoot.isKeyDown("p")){
@@ -201,21 +200,20 @@ new Tile("door2LR",183,218),*/};
             maxHealth=100;
             updateHealth();
         }
+        
+        //Removes all enemies after you die, so that you can die in peace
         if(health==0){
             removeObjects(getObjects(Enemy.class));
         }
+        
+        //Deals with doors
         if(level>0&getObjects(Enemy.class).size()<=0){
             
             doorsRemoved=true;
         }
         else if(level>0){
             doorsRemoved=false;
-        }
-        //if(level==0&getObjects(Demon.class).size()==0){
-         //   addObject(new Demon(),260,190);
-        //}
-        
-        
+        }        
     }
     public void setDoors(boolean bool){
         doorsRemoved=bool;
@@ -223,94 +221,124 @@ new Tile("door2LR",183,218),*/};
     public static boolean doorsRemoved(){
        return doorsRemoved;
     }
+    //Spawns the next room up
     public void levelUp(){
         level++;
         
         spawnArmy(level);
         spawnMap(level);
     }
+    //Spawns the next room down
     public void levelDown(){
         
         level--;
         spawnArmy(level);
         spawnMap(level);
     }
+    /**
+     * Iterates through the armyArray that corresponds with the current level
+    */
     public void spawnArmy(int level){
         
         
         removeObjects(getObjects(Enemy.class));
         for(int i = 0 ; i < armyArray[level].length ; i++){
-            
+            //adds the enemy object
             spawnRandomInArea(armyArray[level][i],100,50,550,350);
             
-            armyArray[level][i].setEnemyNumber(i);
         }
     }
+    /**
+     * Iterates through the mapArray that corresponds with the current level
+    */
     public void spawnMap(int level){
-        //Loops through the entire map array, adding every tileObject[i]
+   
         removeObjects(getObjects(Tile.class));
         for(int i = 0 ; i < mapArray[level].length ; i++){
-            
+            //Adds the tile object
             addObject(mapArray[level][i],0,0);
         }
     }
+    /**Gets a random number in between x and y 
+     * @param x first number
+     * @param y second number
+     * @return a random number between x and y
+     */
     public int getRandomNum(int x, int y){
         return Greenfoot.getRandomNumber(y-x)+x;
     }
+    /**Spawns an enemy c on a random point in the rectangular area defined by the points (x1,y1) and (x2,y2)
+     * @param Enemy c the type of enemy that will be spawned
+     * @param x1 x position of first corner
+     * @param y1 y position of first corner
+     * @param x2 x position of second corner
+     * @param y2 y position of second corner
+     */
     public void spawnRandomInArea(Enemy c, int x1, int y1, int x2, int y2){
         addObject(c,getRandomNum(x1,x2),getRandomNum(y1,y2));
     }    
+    /**
+     * Increases and updates coins by 1
+     */
     public void increaseCoins(){
         coins++;
         coinsLabel.setValue(coins);
 
     }
+    /**
+     * decreases and updates coins by a set amount
+     * @param amount amount subtracted from coins
+     */
     public void decreaseCoins(int amount){
         coins-=amount;
         coinsLabel.setValue(coins);
 
     }
+    /**
+     * Increases health and updates health
+     */
     public void increaseHealth(){
         health++;
         updateHealth();
     }   
+    /**
+     * Decreases health and updates health
+     */
     public void decreaseHealth(){
         health--;
         new GreenfootSound("sounds/Hit_/PlayerHurt_0.mp3").play();
         updateHealth();
     }
+    /**
+     *Updates Health
+     */
     public void updateHealth(){
+        //Removes the old hearts
         removeObjects(getObjects(HeartUI.class));
+        //Cycles maxHealth times
         for(int i = 0 ; i <maxHealth ; i++){
+            //Adds health amount of red hearts
             if(i<health){
                 addObject(new HeartUI("images/heart0.png"),40*i+35,30);
             }
+            //The rest of the hearts are empty hearts
             else{
                 addObject(new HeartUI("images/heart1.png"),40*i+35,30);
             }
         }
     }
+    /**
+     * This fills the entire screen with a carpet of skeletons
+     * Useless in game, but useful during testing
+     */
     public void spawnSkeletonScreen(){
         removeObjects(getObjects(Skeleton.class));
         for(int x = 50 ; x <= 550 ; x = x + 20){
             for(int y = 50 ; y <= 350 ; y = y +20){
-                spawnGoblin(x,y);
+                spawnSkeleton(x,y);
             }
         }
     }
-    public void spawnGoblinGang(int xPos, int yPos){
-        for(int x = 0 ; x <= 100 ; x = x + 20){
-            for(int y = 0 ; y <= 100 ; y = y +20){
-                spawnGoblin(x+xPos,y+yPos);
-            }
-        }
-    }
-    public void spawnEnemies(Enemy[] e){
-        for(int i = 0 ; i < e.length ; i++){
-            addObject(e[i],0,0);
-        }
-    }
-    
     public void spawnSkeleton(int x, int y)
     {
         //Spawns a skeleton at x y

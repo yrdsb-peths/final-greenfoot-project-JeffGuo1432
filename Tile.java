@@ -9,8 +9,10 @@ import java.util.List;
 public class Tile extends Obstacle
 {
     /**
-     * Act - do whatever the Wall wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * The Tile class manages all the tiles
+     * Each tile is different and interacts differently with the world
+     * Their hitboxes can differ due to the sprites that I picked
+     * I regret not choosing squares as my tiles, since they would have been much easier to use
      */
     
     
@@ -18,6 +20,12 @@ public class Tile extends Obstacle
     public int x;
     public int y;
     public int tileSize=40;
+    /**
+     * The Tile 
+     * @param tileName The name of the Tile, which holds information such as its hitbox and image
+     * @param x the x position before being snapped to the grid
+     * @param y the y position before being snapped to the grid 
+     */
     public Tile(String tileName,int x, int y){
         this.tileName=tileName;
         GreenfootImage image= new GreenfootImage("images/Tiles_/"+tileName+".png");
@@ -42,15 +50,23 @@ public class Tile extends Obstacle
             world.addObject(this, x, y);    
         }
         
+        //This code only applies if the Tile is a door, which is the red lava blocks
         if(getTileType().equals("door")){
             
+            //Removes the doors when the world tells it to
             if(world.doorsRemoved()){
                 
                 world.removeObject(this);
             }
         }
     }
-    //returns the tiles direction as a string
+    /**
+     *This returns the direction of the Tile
+     *for example if the tileName is wallD
+     *it returns "D"
+     *if the tileName is doorLR
+     *it returns "LR"
+     */
     public String getTileDirection()
     {
         String ans="";
@@ -63,6 +79,13 @@ public class Tile extends Obstacle
             }
         }
     }
+    /**
+     *This returns the type of the Tile
+     *for example if the tileName is wallD
+     *it returns "wall"
+     *if the tileName is doorLR
+     *it returns "door"
+     */
     public String getTileType()
     {
         String ans="";
@@ -75,6 +98,7 @@ public class Tile extends Obstacle
             }
         }
     }
+    
     //If the Hero is lower down that the tile, the Hero will appear ontop and vice versa
     public void setLayers(){
         MyWorld world = (MyWorld) getWorld();
