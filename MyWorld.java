@@ -30,6 +30,7 @@ public class MyWorld extends World
     Label instructions1 = new Label("",30);
     Label title = new Label ("",80);
     Label description = new Label("",28);
+    Label author = new Label("",28);
             Label instructions2 = new Label("",30);
             
     /**
@@ -37,6 +38,19 @@ public class MyWorld extends World
      * they hold the information of every single tile of a particular level, its position, its name and direction
      */
     Tile[] level1Map = {
+    new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",26,253),
+    new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),
+    new Tile("wallD",145,20),new Tile("wallD",194,23),new Tile("wallR",18,105),new Tile("wallD",224,23),
+    new Tile("wallD",267,22),new Tile("wallD",309,22),new Tile("wallD",346,23),new Tile("wallD",392,24),
+    new Tile("wallD",421,22),new Tile("wallD",460,22),new Tile("wallD",504,22),new Tile("wallD",534,22),
+    new Tile("wallL",580,62),new Tile("wallL",588,103),new Tile("wallL",581,142),new Tile("wallL",577,259),
+    new Tile("wallL",583,296),new Tile("wallL",593,332),new Tile("wallL",592,19),new Tile("wallCornerUR",33,378),
+    new Tile("wallU",72,378),new Tile("wallU",98,378),new Tile("wallU",133,382),new Tile("wallU",174,383),
+    new Tile("wallU",218,384),new Tile("wallU",251,385),new Tile("wallU",299,381),new Tile("wallU",342,383),
+    new Tile("wallU",384,383),new Tile("wallU",421,386),new Tile("wallU",461,388),new Tile("wallU",500,387),
+    new Tile("wallU",536,386),new Tile("wallCornerUL",572,385),new Tile("wallUL",576,263),new Tile("wallD",577,132),
+    new Tile("wallD",16,147),new Tile("wallUR",20,259),new Tile("door2LR",582,168),new Tile("door2LR",583,213),};
+    Tile[] level3Map = {
     new Tile("wallR",24,19),new Tile("wallR",15,52),new Tile("wallR",15,146),new Tile("wallR",26,253),
     new Tile("wallR",18,297),new Tile("wallR",17,339),new Tile("wallD",71,25),new Tile("wallD",105,19),
     new Tile("wallD",145,20),new Tile("wallD",194,23),new Tile("wallR",18,105),new Tile("wallD",224,23),
@@ -91,7 +105,10 @@ new Tile("wallUL",450,180),};
     Enemy[]level2Army={new Goblin(), new Goblin(), new Skeleton(), new Skeleton()};
     Enemy[]level3Army={new Goblin(), new Goblin(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton(), new Skeleton()};
     Enemy[]level4Army={new Goblin(), new Goblin(),new GoblinKing(), new Skeleton(), new Skeleton()};
-    Enemy[][]armyArray={level0Army,level0Army,level1Army,level2Army,level3Army,level4Army,level0Army,level0Army};
+    Enemy[]level5Army={new Goblin(), new Goblin(),new Goblin(), new Goblin(),new Goblin(), new Goblin()};
+    Enemy[]level6Army={new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),};
+    Enemy[]level7Army={new Goblin(), new Goblin(),new Goblin(), new Goblin(),new Goblin(), new Goblin(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new Skeleton(),new GoblinKing()};
+    Enemy[][]armyArray={level0Army,level0Army,level1Army,level2Army,level3Army,level4Army,level5Army,level6Army,level7Army};
    
     
     
@@ -100,8 +117,8 @@ new Tile("wallUL",450,180),};
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(worldHeight, worldWidth, 1, false); 
         doorsRemoved=false;
-        
-        
+        musicTimer.mark();
+        tileName="wallL";
         volume=25;
         Hero hero = new Hero();
         addObject(hero,300,200);
@@ -110,7 +127,7 @@ new Tile("wallUL",450,180),};
         addObject(new Axe(),70,200);
         
         
-        musicTimer.mark();
+        
         
         
         coinsLabel.setFillColor(coinsColor);
@@ -123,18 +140,20 @@ new Tile("wallUL",450,180),};
         /**
          * Displays the Title and Description on level 0
          */
-        if(level==0&getObjects(Label.class).size()<5){
-            title.setValue("AXE GUY");
+        if(level==0&getObjects(Title.class).size()<1){
+            addObject(new Title(),300,100);
             description.setValue("Music by Brandon Dela Cruz [+] and [-] for volume");
-            addObject(description,300,300);
-            addObject(title,300,150);
-   
+            addObject(description,300,330);
+            author.setValue("by Jeff Guo");
+            addObject(author,300,300);
+           
         }
         if(level!=0){
             
             description.setValue("");
-            title.setValue("");
-           
+            author.setValue("");
+            removeObjects(getObjects(Title.class));
+               
         }
         /**
          * Displays the Instructions on level 1
@@ -174,6 +193,7 @@ new Tile("wallUL",450,180),};
         else{
             music.play();
         }
+        
         music.setVolume(volume);
         musicMain.setVolume(volume);
         
@@ -188,7 +208,7 @@ new Tile("wallUL",450,180),};
         //Whenever the mouse button is clicked, a tile with the name of tileName is spawned on the location of the mouse
         if(Greenfoot.mouseClicked(null)){
             MouseInfo mouse = Greenfoot.getMouseInfo();
-            tileName="wallUR";
+            
             addObject(new Tile(tileName,mouse.getX(),mouse.getY()),mouse.getX(),mouse.getY());
             //When a tile is created, the code prints out "newTile(tileName,x,y)" which I can then easily 
             //copy and paste into the mapArrays above
@@ -204,6 +224,16 @@ new Tile("wallUL",450,180),};
         //Removes all enemies after you die, so that you can die in peace
         if(health==0){
             removeObjects(getObjects(Enemy.class));
+            if(volume>10){
+                if(Greenfoot.getRandomNumber(30)==0){
+                volume--;
+                }
+            }
+            if(volume<=10){
+                if(Greenfoot.getRandomNumber(100)==0){
+                volume--;
+                }
+            }
         }
         
         //Deals with doors

@@ -38,6 +38,6 @@ public class HeartUI extends UI
     public void act()
     {
         bringToTop();
-        bob(230);
+        bob(500);
     }
 }

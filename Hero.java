@@ -84,7 +84,7 @@ public class Hero extends Entity
             if((xVelocity==0)&(yVelocity==0)){
                 //If the player stands still the Idle_ animation plays
                 action="Idle_";
-                animationDelay=160;
+                animationDelay=125;
             }
             else{
                 //If the player is walking the WalkRun_ animation plays

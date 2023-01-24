@@ -19,7 +19,7 @@ public class Skeleton extends Enemy
     SimpleTimer animationTimer = new SimpleTimer();
     String action="Idle_";
     int imageIndex=0;
-    int animationDelay = 100;
+    int animationDelay = 125;
     String enemy = "skeleton_";
     int size = 72;
     //variables used in movement along the x axis
