@@ -27,7 +27,8 @@ public class AxeHitbox extends Entity
     
     //All sounds
     GreenfootSound axeStuck = new GreenfootSound("sounds/AxeStuck.mp3");
-    
+    GreenfootSound swingSound = new GreenfootSound("sounds/swing.mp3");    
+    GreenfootSound swooshSound = new GreenfootSound("sounds/swoosh (1).mp3");    
     //This count variable is a replacement for SimpleTimer, I used it a ton during testing, since SimpleTimer was often finicky
     int count;
     
@@ -54,7 +55,8 @@ public class AxeHitbox extends Entity
         stuck=false;
         weaponDirection=-1;
         setImage(hitbox);   
-        swingHitbox.scale(12,24);
+        swingHitbox.scale(24,48);
+        swingSound.setVolume(50);
     }
     public void act()
     {
@@ -81,6 +83,11 @@ public class AxeHitbox extends Entity
         }
         
         if(thrown==true){
+            
+            //Plays the swoosh sound
+            if(stuck==false){
+            swooshSound.play();
+            }
             //If the axe is thrown the player cannot melee attack therefore attack must be false.
             attack=false;
             //This hitbox is a small square rather than the rectangle used for the melee attack
@@ -94,6 +101,7 @@ public class AxeHitbox extends Entity
             
             if(catchable){
                 if(isTouching(Hero.class)){
+                    swooshSound.stop();
                     //If the Axe is catchable and touching the Hero class, it must not be stuck, it must not be thrown, and it must not be catchable
                     stuck=false;
                     thrown=false;
@@ -110,6 +118,7 @@ public class AxeHitbox extends Entity
                 //This if statement is to ensure that the axeStuck sound only plays one time.
                 if(stuck==false){
                     axeStuck.play();
+                    swooshSound.stop();
                 }
                 //The Axe will get stuck if it touches a wall
                 stuck=true;
@@ -194,7 +203,7 @@ public class AxeHitbox extends Entity
             //The following code excecutes if the space key is pressed, if attack is equal to false 
             //(to make sure the code executes upon once), and if there is no more cooldown.
             if(Greenfoot.isKeyDown("space")&attack==false&attackCooldown<=0){
-                
+                swingSound.play();
                 //Marks the start of the attack
                 attackTimer.mark();
                 

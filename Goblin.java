@@ -20,7 +20,7 @@ public class Goblin extends Enemy
     SimpleTimer animationTimer = new SimpleTimer();
     String action="Idle_";
     int imageIndex=0;
-    int animationDelay = 100;
+    int animationDelay = 125;
     
     //variables used in movement along the x axis
     int xVelocity=0;
